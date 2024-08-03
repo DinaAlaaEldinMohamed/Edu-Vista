@@ -1,4 +1,5 @@
-import 'package:edu_vista/pages/screens/onboarding-screen.dart';
+import 'package:edu_vista/pages/screens/splash_screen.dart';
+import 'package:edu_vista/utils/app_routes.dart';
 import 'package:edu_vista/utils/colors-utils.dart';
 import 'package:flutter/material.dart';
 
@@ -13,15 +14,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Edu Vista',
-        theme: ThemeData(
-          fontFamily: "PlusJakartaSans",
-          colorScheme:
-              ColorScheme.fromSeed(seedColor: ColorUtility.primaryColor),
-          scaffoldBackgroundColor: ColorUtility.pageBackgroundColor,
-          useMaterial3: true,
-        ),
-        home: const OnboardingScreen());
+      debugShowCheckedModeBanner: false,
+      title: 'Edu Vista',
+      theme: ThemeData(
+        fontFamily: "PlusJakartaSans",
+        colorScheme: ColorScheme.fromSeed(seedColor: ColorUtility.primaryColor),
+        scaffoldBackgroundColor: ColorUtility.pageBackgroundColor,
+        useMaterial3: true,
+      ),
+      home: const SplashScreen(),
+      onGenerateRoute: AppRouter.generateRoute,
+    );
   }
 }

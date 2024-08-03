@@ -6,4 +6,5 @@ class ColorUtility {
   static const secondaryColor = Color(0xffF5BB06);
   static const blackColor = Color(0xff1D1B20);
   static const greyColor = Color(0xffEBEBEB);
+  static const darkGreyColor = Color(0xff3A3A3A);
 }
