@@ -85,6 +85,7 @@ class AuthCubit extends Cubit<AuthState> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
+            backgroundColor: Colors.green,
             content: Text('Account created successfully'),
           ),
         );

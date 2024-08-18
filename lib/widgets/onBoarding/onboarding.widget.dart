@@ -110,6 +110,7 @@ class OnboardingWidget extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 45),
                 child: AppElvatedBtn(
+                  horizontal: 0,
                   title: "Login",
                   onPressed: () => onLogin(context),
                 )),
