@@ -1,3 +1,4 @@
+import 'package:edu_vista/screens/home/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +9,7 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
 
   Future<void> login({
+    required BuildContext context,
     required TextEditingController emailController,
     required TextEditingController passwordController,
   }) async {
@@ -18,7 +20,13 @@ class AuthCubit extends Cubit<AuthState> {
       );
 
       if (credentials.user != null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            backgroundColor: Colors.green,
+            content: Text(
+                'User:  ${credentials.user?.displayName} logged in successfully')));
+
         emit(LoginSuccess());
+        Navigator.pushReplacementNamed(context, HomeScreen.route);
       }
     } on FirebaseAuthException catch (e) {
       if (!context.mounted) return;

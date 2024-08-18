@@ -47,44 +47,46 @@ class _SignUpScreenState extends State<SignUpScreen> {
             nameController: nameController,
             passwordController: passwordController);
       },
-      body: Column(
-        children: [
-          AppTextFormField(
-            controller: nameController,
-            hintText: 'Dina Alaa ',
-            labelText: 'Full Name',
-            keyboardType: TextInputType.emailAddress,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          AppTextFormField(
-            controller: emailController,
-            hintText: 'Demo@gmail.com',
-            labelText: 'Email',
-            keyboardType: TextInputType.emailAddress,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          AppTextFormField(
-            controller: passwordController,
-            hintText: '***********',
-            labelText: 'Password',
-            obscureText: true,
-            keyboardType: TextInputType.visiblePassword,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          AppTextFormField(
-            controller: confirmPasswordController,
-            hintText: '***********',
-            labelText: 'Confirm Password',
-            obscureText: true,
-            keyboardType: TextInputType.visiblePassword,
-          ),
-        ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            AppTextFormField(
+              controller: nameController,
+              hintText: 'Enter your name',
+              labelText: 'Full Name',
+              keyboardType: TextInputType.emailAddress,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            AppTextFormField(
+              controller: emailController,
+              hintText: 'Enter your email address',
+              labelText: 'Email',
+              keyboardType: TextInputType.emailAddress,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            AppTextFormField(
+              controller: passwordController,
+              hintText: 'Enter your password',
+              labelText: 'Password',
+              obscureText: true,
+              keyboardType: TextInputType.visiblePassword,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            AppTextFormField(
+              controller: confirmPasswordController,
+              hintText: '***********',
+              labelText: 'Confirm Password',
+              obscureText: true,
+              keyboardType: TextInputType.visiblePassword,
+            ),
+          ],
+        ),
       ),
     );
   }

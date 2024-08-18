@@ -81,7 +81,7 @@ class _AuthTemplateWidgetState extends State<AuthTemplateWidget> {
                               decoration: const BoxDecoration(
                                   color: Colors.white, shape: BoxShape.circle),
                               child: Image.asset(
-                                'assets/images/facebook-64.png',
+                                'assets/images/facebook.png',
                                 width: 80,
                                 height: 80,
                               ),
@@ -91,7 +91,8 @@ class _AuthTemplateWidgetState extends State<AuthTemplateWidget> {
                               child: Text(
                                 'Sign In with Facebook',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 17),
+                                style: TextStyle(
+                                    fontSize: 17, color: Colors.white),
                               ),
                             ),
                           ],
@@ -196,6 +197,7 @@ class _AuthTemplateWidgetState extends State<AuthTemplateWidget> {
                                 : Text(
                                     title,
                                     style: const TextStyle(
+                                        color: Colors.white,
                                         fontSize: 18,
                                         fontWeight: FontWeight.w700),
                                   ),

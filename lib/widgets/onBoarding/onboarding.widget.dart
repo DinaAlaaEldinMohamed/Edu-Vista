@@ -1,4 +1,5 @@
 import 'package:edu_vista/screens/auth/login_screen.dart';
+import 'package:edu_vista/services/pref.service.dart';
 import 'package:edu_vista/utils/colors-utils.dart';
 import 'package:edu_vista/widgets/onBoarding/nav_buttons.widget.dart';
 import 'package:edu_vista/widgets/app/appButtons/app_elvated_btn.dart';
@@ -109,8 +110,8 @@ class OnboardingWidget extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 45),
                 child: AppElvatedBtn(
-                  title: "Get Started",
-                  onPressed: () {},
+                  title: "Login",
+                  onPressed: () => onLogin(context),
                 )),
           )
         else
@@ -121,6 +122,11 @@ class OnboardingWidget extends StatelessWidget {
           )
       ],
     );
+  }
+
+  void onLogin(BuildContext context) {
+    PreferncesService.isOnboardingSeen = true;
+    Navigator.pushReplacementNamed(context, LoginScreen.route);
   }
 
   List<Widget> _buildIndicators() {

@@ -1,4 +1,6 @@
 import 'package:edu_vista/screens/auth/login_screen.dart';
+import 'package:edu_vista/screens/auth/signup_screen.dart';
+import 'package:edu_vista/screens/home/home_screen.dart';
 import 'package:edu_vista/screens/onBoarding/onboarding_screen.dart';
 import 'package:edu_vista/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,10 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const OnboardingScreen());
       case LoginScreen.route:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
+      case SignUpScreen.route:
+        return MaterialPageRoute(builder: (_) => const SignUpScreen());
+      case HomeScreen.route:
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
       default:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
     }
