@@ -1,5 +1,7 @@
+import 'package:edu_vista/screens/auth/login_screen.dart';
 import 'package:edu_vista/utils/colors-utils.dart';
-import 'package:edu_vista/widgets/onBoarding/nav_buttons.dart';
+import 'package:edu_vista/widgets/onBoarding/nav_buttons.widget.dart';
+import 'package:edu_vista/widgets/app/appButtons/app_elvated_btn.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingWidget extends StatelessWidget {
@@ -104,23 +106,12 @@ class OnboardingWidget extends StatelessWidget {
         if (showGetStartedButton)
           Align(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 45),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/login');
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: ColorUtility.secondaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  'Get Started',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 45),
+                child: AppElvatedBtn(
+                  title: "Get Started",
+                  onPressed: () {},
+                )),
           )
         else
           Padding(

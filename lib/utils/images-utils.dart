@@ -10,6 +10,6 @@ class ImagesUtils {
   ];
 
   static String getOnboardingImage(int index) {
-    return '${_assetPath}${onboardingImages[index]}';
+    return '$_assetPath${onboardingImages[index]}';
   }
 }

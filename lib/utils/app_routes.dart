@@ -1,20 +1,20 @@
-import 'package:edu_vista/pages/screens/login/login.dart';
-import 'package:edu_vista/pages/screens/onBoarding/onboarding-screen.dart';
-import 'package:edu_vista/pages/screens/splash_screen.dart';
+import 'package:edu_vista/screens/auth/login_screen.dart';
+import 'package:edu_vista/screens/onBoarding/onboarding_screen.dart';
+import 'package:edu_vista/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 class AppRouter {
   static Route generateRoute(RouteSettings settings) {
+    final Map? data = settings.arguments as Map?;
     switch (settings.name) {
-      case '/':
+      case SplashScreen.route:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
-      case '/onboard':
-        return MaterialPageRoute(builder: (_) => OnboardingScreen());
-      case '/login':
-        return MaterialPageRoute(builder: (_) => const Login());
-
+      case OnboardingScreen.route:
+        return MaterialPageRoute(builder: (_) => const OnboardingScreen());
+      case LoginScreen.route:
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
       default:
-        return MaterialPageRoute(builder: (_) => const Login());
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
     }
   }
 }

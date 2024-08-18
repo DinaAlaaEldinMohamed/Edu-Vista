@@ -1,8 +1,11 @@
+import 'package:edu_vista/screens/auth/login_screen.dart';
 import 'package:edu_vista/utils/images-utils.dart';
-import 'package:edu_vista/widgets/onBoarding/onboarding-widget.dart';
+import 'package:edu_vista/widgets/onBoarding/onboarding.widget.dart';
 import 'package:flutter/material.dart';
 
 class OnboardingScreen extends StatefulWidget {
+  static const String route = '/onboarding';
+
   const OnboardingScreen({super.key});
 
   @override
@@ -26,7 +29,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      Navigator.pushReplacementNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, LoginScreen.route);
     }
   }
 
