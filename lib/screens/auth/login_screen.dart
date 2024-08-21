@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             AppTextFormField(
               controller: emailController,
-              hintText: 'Enter your email address',
+              hintText: 'demo@mail.com',
               labelText: 'Email',
               keyboardType: TextInputType.emailAddress,
             ),
@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             AppTextFormField(
               controller: passwordController,
-              hintText: 'Enter your password',
+              hintText: '**********************',
               labelText: 'Password',
               obscureText: true,
               keyboardType: TextInputType.visiblePassword,

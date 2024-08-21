@@ -1,11 +1,13 @@
-import 'package:edu_vista/utils/colors-utils.dart';
+import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class AppElvatedBtn extends StatelessWidget {
   final Color backgroundColor;
   double? horizontal;
   Widget? child;
   String? title;
+  double? borderRadius;
 
   final Color textColor;
   void Function() onPressed;
@@ -19,6 +21,7 @@ class AppElvatedBtn extends StatelessWidget {
       this.child,
       this.title,
       required this.onPressed,
+      this.borderRadius,
       super.key}) {
     assert(
         child != null || title != null, 'child Or Text must not equal to null');
@@ -31,7 +34,7 @@ class AppElvatedBtn extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         backgroundColor: backgroundColor,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(borderRadius ?? 8),
         ),
       ),
       child: title != null

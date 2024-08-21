@@ -1,6 +1,7 @@
-import 'package:edu_vista/utils/colors-utils.dart';
+import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class AppTextBtn extends StatelessWidget {
   String label;
   void Function()? onPressed;

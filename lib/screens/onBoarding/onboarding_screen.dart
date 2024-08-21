@@ -1,5 +1,5 @@
 import 'package:edu_vista/screens/auth/login_screen.dart';
-import 'package:edu_vista/utils/images-utils.dart';
+import 'package:edu_vista/utils/images_utils.dart';
 import 'package:edu_vista/widgets/onBoarding/onboarding.widget.dart';
 import 'package:flutter/material.dart';
 

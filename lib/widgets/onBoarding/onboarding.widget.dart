@@ -1,6 +1,6 @@
 import 'package:edu_vista/screens/auth/login_screen.dart';
 import 'package:edu_vista/services/pref.service.dart';
-import 'package:edu_vista/utils/colors-utils.dart';
+import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:edu_vista/widgets/onBoarding/nav_buttons.widget.dart';
 import 'package:edu_vista/widgets/app/appButtons/app_elvated_btn.dart';
 import 'package:flutter/material.dart';

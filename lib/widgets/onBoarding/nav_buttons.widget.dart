@@ -1,4 +1,4 @@
-import 'package:edu_vista/utils/colors-utils.dart';
+import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:flutter/material.dart';
 
 class NavButtons extends StatelessWidget {

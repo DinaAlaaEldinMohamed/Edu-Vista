@@ -3,7 +3,7 @@ import 'package:edu_vista/firebase_options.dart';
 import 'package:edu_vista/screens/splash_screen.dart';
 import 'package:edu_vista/services/pref.service.dart';
 import 'package:edu_vista/utils/app_routes.dart';
-import 'package:edu_vista/utils/colors-utils.dart';
+import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

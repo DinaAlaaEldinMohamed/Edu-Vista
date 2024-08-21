@@ -1,6 +1,6 @@
 import 'package:edu_vista/screens/auth/login_screen.dart';
 import 'package:edu_vista/screens/auth/signup_screen.dart';
-import 'package:edu_vista/utils/colors-utils.dart';
+import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:edu_vista/widgets/app/appButtons/app_elvated_btn.dart';
 import 'package:edu_vista/widgets/app/appButtons/app_text_btn.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +39,45 @@ class _AuthTemplateWidgetState extends State<AuthTemplateWidget> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 57,
+                    child: AppElvatedBtn(
+                      borderRadius: 15,
+                      onPressed: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        if (isLogin) {
+                          await widget.onLogin?.call();
+                        } else {
+                          await widget.onSignUp?.call();
+                        }
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      },
+                      child: _isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : Text(
+                              title,
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700),
+                            ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 40,
+            ),
             const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -52,7 +91,10 @@ class _AuthTemplateWidgetState extends State<AuthTemplateWidget> {
                   padding: EdgeInsets.symmetric(horizontal: 5),
                   child: Text(
                     'Or sign with',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600),
                   ),
                 ),
                 Expanded(
@@ -68,48 +110,51 @@ class _AuthTemplateWidgetState extends State<AuthTemplateWidget> {
               child: Row(
                 children: [
                   Expanded(
-                    child: AppElvatedBtn(
-                        horizontal: 0,
-                        backgroundColor: const Color(0xff1877f2),
-                        textColor: Colors.white,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 35,
-                              height: 35,
-                              decoration: const BoxDecoration(
-                                  color: Colors.white, shape: BoxShape.circle),
-                              child: Image.asset(
-                                'assets/images/facebook.png',
-                                width: 80,
-                                height: 80,
+                    child: SizedBox(
+                      height: 46,
+                      child: AppElvatedBtn(
+                          horizontal: 0,
+                          backgroundColor: const Color(0xff1877f2),
+                          textColor: Colors.white,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 35,
+                                height: 35,
+                                child: Image.asset(
+                                  'assets/images/facebook.png',
+                                  width: 80,
+                                  height: 80,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
-                            const Expanded(
-                              child: Text(
-                                'Sign In with Facebook',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 17, color: Colors.white),
+                              const SizedBox(width: 10),
+                              const Expanded(
+                                child: Text(
+                                  'Sign In with Facebook',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 17, color: Colors.white),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        onPressed: () {}),
+                            ],
+                          ),
+                          onPressed: () {}),
+                    ),
                   ),
                   const SizedBox(
                     width: 15,
                   ),
-                  AppElvatedBtn(
-                    horizontal: 0,
-                    backgroundColor: Colors.white,
-                    onPressed: () {},
-                    child: Image.asset(
-                      'assets/images/google.png',
-                      width: 35,
-                      height: 40,
+                  SizedBox(
+                    height: 46,
+                    child: AppElvatedBtn(
+                      backgroundColor: ColorUtility.pageBackgroundColor,
+                      onPressed: () {},
+                      child: Image.asset(
+                        'assets/images/google.png',
+                        width: 35,
+                        height: 40,
+                      ),
                     ),
                   )
                 ],
@@ -157,56 +202,31 @@ class _AuthTemplateWidgetState extends State<AuthTemplateWidget> {
               padding: _padding,
               child: SingleChildScrollView(
                 child: Form(
-                    child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    widget.body,
-                    AppTextBtn(
-                      label: 'Forgot Password ?',
-                      onPressed: () {},
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: AppElvatedBtn(
-                            horizontal: 0,
-                            onPressed: () async {
-                              if (isLogin) {
-                                setState(() {
-                                  _isLoading = true;
-                                });
-                                await widget.onLogin?.call();
-                                setState(() {
-                                  _isLoading = false;
-                                });
-                              } else {
-                                setState(() {
-                                  _isLoading = true;
-                                });
-                                await widget.onSignUp?.call();
-                                setState(() {
-                                  _isLoading = false;
-                                });
-                              }
-                            },
-                            child: _isLoading
-                                ? const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  )
-                                : Text(
-                                    title,
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700),
-                                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (isLogin)
+                        const SizedBox(
+                          height: 80,
+                        ),
+                      widget.body,
+                      if (isLogin)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              AppTextBtn(
+                                label: 'Forgot Password ?',
+                                onPressed: () {},
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                )),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),

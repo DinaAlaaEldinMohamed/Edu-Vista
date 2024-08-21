@@ -1,5 +1,7 @@
+import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class AppTextFormField extends StatelessWidget {
   String hintText;
   String labelText;
@@ -32,22 +34,31 @@ class AppTextFormField extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(
               labelText,
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
             ),
           ),
-          TextFormField(
-            onChanged: onChanged,
-            controller: controller,
-            obscureText: obscureText ?? false,
-            keyboardType: keyboardType,
-            validator: validator,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(7),
+          SizedBox(
+            height: 45,
+            child: TextFormField(
+              onChanged: onChanged,
+              controller: controller,
+              obscureText: obscureText ?? false,
+              keyboardType: keyboardType,
+              validator: validator,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: Colors.white,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(7),
+                  borderSide: const BorderSide(color: ColorUtility.borderColor),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(7),
+                  borderSide:
+                      const BorderSide(color: ColorUtility.darkGreyColor),
+                ),
+                hintText: hintText,
               ),
-              hintText: hintText,
             ),
           ),
         ],
