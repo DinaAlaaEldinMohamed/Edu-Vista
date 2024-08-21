@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:edu_vista/models/categories.dart';
+import 'package:edu_vista/models/category.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:edu_vista/utils/text_utility.dart';
 import 'package:flutter/material.dart';
