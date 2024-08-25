@@ -13,6 +13,8 @@ class Course {
   bool hasCertificate;
   String currency;
   String rank;
+  //int enrollments;
+  //Map<String, int> rankings;
   Course({
     required this.id,
     required this.title,
@@ -26,6 +28,8 @@ class Course {
     required this.hasCertificate,
     required this.currency,
     required this.rank,
+    //required this.enrollments,
+    // required this.rankings,
   });
 
   // Factory method to create a Course instance from a Firestore document
@@ -54,6 +58,8 @@ class Course {
       hasCertificate: data['has_certificate'],
       currency: data['currency'],
       rank: data['rank'],
+      // enrollments: data['enrollments'],
+      //rankings: data['rankings'],
     );
   }
 

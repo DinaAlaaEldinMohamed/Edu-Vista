@@ -1,41 +1,32 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Lecture {
-  String id;
-  String title;
-  String description;
-  Duration duration;
-  Timestamp createdAt;
-  String videoUrl; // URL of the video
+  String? id;
+  String? title;
+  String? description;
+  int? duration;
+  String? lecture_url;
+  int? sort;
+  List<String>? watched_users;
 
-  Lecture({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.duration,
-    required this.createdAt,
-    required this.videoUrl,
-  });
-
-  factory Lecture.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    return Lecture(
-      id: doc.id,
-      title: data['title'] ?? '',
-      description: data['description'] ?? '',
-      duration: Duration(minutes: data['duration'] ?? 0),
-      createdAt: data['created_at'] ?? Timestamp.now(),
-      videoUrl: data['video_url'] ?? '',
-    );
+  Lecture.fromJson(Map<String, dynamic> data) {
+    id = data['id'];
+    title = data['title'];
+    description = data['description'];
+    duration = data['duration'];
+    lecture_url = data['lecture_url'];
+    sort = data['sort'];
+    watched_users =
+        data['watched_users'] != null ? List.from(data['watched_users']) : null;
   }
 
-  Map<String, dynamic> toFirestore() {
-    return {
-      'title': title,
-      'description': description,
-      'duration': duration.inMinutes,
-      'created_at': createdAt,
-      'video_url': videoUrl,
-    };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['title'] = title;
+    data['description'] = description;
+    data['duration'] = duration;
+    data['lecture_url'] = lecture_url;
+    data['sort'] = sort;
+    data['watched_users'] = watched_users;
+    return data;
   }
 }

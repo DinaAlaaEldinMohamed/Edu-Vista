@@ -47,7 +47,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                     child: Center(
                       child: Text(
                         categories[index].name ?? 'No Name',
-                        style: TextUtils.categoryTextStyle,
+                        style: TextUtils.subheadline,
                       ),
                     )),
                 separatorBuilder: (context, index) => const SizedBox(
