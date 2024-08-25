@@ -52,6 +52,7 @@ class _ChipWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('=>>>>>>$isSelected');
     return Chip(
       labelPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
       padding: const EdgeInsets.all(8),
@@ -64,8 +65,6 @@ class _ChipWidget extends StatelessWidget {
         style: TextStyle(
             color: isSelected ? Colors.white : Colors.black, fontSize: 17),
       ),
-      // color:
-      //     MaterialStatePropertyAll(ColorUtility.deepYellow),
     );
   }
 }

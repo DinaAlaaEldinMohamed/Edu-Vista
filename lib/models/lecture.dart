@@ -3,18 +3,18 @@ class Lecture {
   String? title;
   String? description;
   int? duration;
-  String? lecture_url;
+  String? lectureUrl;
   int? sort;
-  List<String>? watched_users;
+  List<String>? watchedUsers;
 
   Lecture.fromJson(Map<String, dynamic> data) {
     id = data['id'];
     title = data['title'];
     description = data['description'];
     duration = data['duration'];
-    lecture_url = data['lecture_url'];
+    lectureUrl = data['lecture_url'];
     sort = data['sort'];
-    watched_users =
+    watchedUsers =
         data['watched_users'] != null ? List.from(data['watched_users']) : null;
   }
 
@@ -24,9 +24,9 @@ class Lecture {
     data['title'] = title;
     data['description'] = description;
     data['duration'] = duration;
-    data['lecture_url'] = lecture_url;
+    data['lecture_url'] = lectureUrl;
     data['sort'] = sort;
-    data['watched_users'] = watched_users;
+    data['watched_users'] = watchedUsers;
     return data;
   }
 }

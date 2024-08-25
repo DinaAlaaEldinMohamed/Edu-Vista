@@ -5,31 +5,50 @@ import 'package:edu_vista/widgets/courses/course_chips.widget.dart';
 import 'package:edu_vista/widgets/courses/course_options.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:video_box/video_box.dart';
 
-class CourseDetailsScreen extends StatelessWidget {
+class CourseDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> courseData;
+
   static const String route = '/course_details';
   //final Course course;
 
   const CourseDetailsScreen({required this.courseData, super.key});
 
   @override
+  State<CourseDetailsScreen> createState() => _CourseDetailsScreenState();
+}
+
+class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
+  @override
+  void initState() {
+    final course = widget.courseData['course'] as Course;
+    context.read<CourseBloc>().add(CourseFetchEvent(course));
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final course = courseData['course'] as Course;
-    final instructorName = courseData['instructorName'] as String;
+    final course = widget.courseData['course'] as Course;
+    final instructorName = widget.courseData['instructorName'] as String;
     return Scaffold(
         body: Stack(
       children: [
         BlocBuilder<CourseBloc, CourseState>(builder: (ctx, state) {
           if (state is! LectureState) return const SizedBox();
           var stateEx = state is LectureChosenState ? state : null;
-          return SizedBox(height: 250, child: Text('video')
-              // VideoBox(
-              //   controller: VideoController(
-              //       source: VideoPlayerController.networkUrl(
-              //           Uri.parse(stateEx!.lecture.lecture_url!))),
-              // ),
-              );
+          return VideoBox(
+            controller: VideoController(
+                source: VideoPlayerController.networkUrl(
+                    Uri.parse(stateEx!.lecture.lectureUrl!))),
+          );
+          // VideoBox(
+          //   controller: VideoController(
+          //       source: VideoPlayerController.networkUrl(
+          //           Uri.parse(stateEx!.lecture.lecture_url!))),
+          // ),
+          // );
         }),
         Align(
           alignment: Alignment.bottomCenter,
@@ -76,45 +95,39 @@ class CourseDetailsScreen extends StatelessWidget {
                         ),
                         Expanded(
                           child: BlocBuilder<CourseBloc, CourseState>(
-                              buildWhen: (previous, current) => false,
                               builder: (ctx, state) {
-                                print('>>>>>>>>build ${state}');
-                                return Column(
-                                  children: [
-                                    CourseChipsWidget(
-                                      selectedOption:
-                                          (state is CourseOptionStateChanges)
-                                              ? state.courseOption
-                                              : null,
-                                      onChanged: (courseOption) {
-                                        context.read<CourseBloc>().add(
-                                            CourseOptionChosenEvent(
-                                                courseOption));
-                                      },
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Expanded(
-                                        child: (state
-                                                is CourseOptionStateChanges)
-                                            ? CourseOptionsWidgets(
-                                                course: context
-                                                    .read<CourseBloc>()
-                                                    .course!,
-                                                courseOption:
-                                                    state.courseOption,
-                                                onLectureChosen: (lecture) {
-                                                  context
-                                                      .read<CourseBloc>()
-                                                      .add(LectureChosenEvent(
-                                                          lecture));
-                                                },
-                                              )
-                                            : const SizedBox.shrink())
-                                  ],
-                                );
-                              }),
+                            print('>>>>>>>>build ${state}');
+                            return Column(
+                              children: [
+                                CourseChipsWidget(
+                                  selectedOption:
+                                      (state is CourseOptionStateChanges)
+                                          ? state.courseOption
+                                          : null,
+                                  onChanged: (courseOption) {
+                                    context.read<CourseBloc>().add(
+                                        CourseOptionChosenEvent(courseOption));
+                                  },
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Expanded(
+                                    child: (state is CourseOptionStateChanges)
+                                        ? CourseOptionsWidgets(
+                                            course: context
+                                                .read<CourseBloc>()
+                                                .course!,
+                                            courseOption: state.courseOption,
+                                            onLectureChosen: (lecture) {
+                                              context.read<CourseBloc>().add(
+                                                  LectureChosenEvent(lecture));
+                                            },
+                                          )
+                                        : const SizedBox.shrink())
+                              ],
+                            );
+                          }),
                         ),
                       ],
                     ),

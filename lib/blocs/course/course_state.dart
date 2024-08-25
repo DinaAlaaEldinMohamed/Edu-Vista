@@ -10,10 +10,16 @@ class CourseOptionStateChanges extends CourseState {
   CourseOptionStateChanges(this.courseOption);
 }
 
-// for lectures
+// For lectures
 class LectureState extends CourseState {}
 
 class LectureChosenState extends LectureState {
   final Lecture lecture;
   LectureChosenState(this.lecture);
+}
+
+// Error state
+class CourseErrorState extends CourseState {
+  final String message;
+  CourseErrorState(this.message);
 }
