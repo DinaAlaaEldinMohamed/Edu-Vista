@@ -3,6 +3,7 @@ import 'package:edu_vista/models/course.dart';
 import 'package:edu_vista/utils/text_utility.dart';
 import 'package:edu_vista/widgets/courses/course_chips.widget.dart';
 import 'package:edu_vista/widgets/courses/course_options.widget.dart';
+import 'package:edu_vista/widgets/lectures/video_box.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_box/video_box.dart';
@@ -38,17 +39,25 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
         BlocBuilder<CourseBloc, CourseState>(builder: (ctx, state) {
           if (state is! LectureState) return const SizedBox();
           var stateEx = state is LectureChosenState ? state : null;
-          return VideoBox(
-            controller: VideoController(
-                source: VideoPlayerController.networkUrl(
-                    Uri.parse(stateEx!.lecture.lectureUrl!))),
+          if (stateEx == null) {
+            return const SizedBox.shrink();
+          }
+          return Container(
+            height: 250,
+            child: stateEx.lecture.lectureUrl == null ||
+                    stateEx.lecture.lectureUrl == ''
+                ? const Center(
+                    child: Text(
+                    'Invalid Url',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold),
+                  ))
+                : VideoBoxWidget(
+                    url: stateEx.lecture.lectureUrl ?? '',
+                  ),
           );
-          // VideoBox(
-          //   controller: VideoController(
-          //       source: VideoPlayerController.networkUrl(
-          //           Uri.parse(stateEx!.lecture.lecture_url!))),
-          // ),
-          // );
         }),
         Align(
           alignment: Alignment.bottomCenter,
