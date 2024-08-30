@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CourseWidget extends StatefulWidget {
   final String rank;
+
   const CourseWidget({required this.rank, super.key});
 
   @override
@@ -33,21 +34,23 @@ class _CourseWidgetState extends State<CourseWidget> {
           return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          return const Center(child: Text('Error fetching data'));
+          return Center(child: Text('Error fetching data: ${snapshot.error}'));
         }
         if (!snapshot.hasData || (snapshot.data?.isEmpty ?? true)) {
-          return const SizedBox(height: 40);
+          return const Center(child: Text('No courses available'));
         }
 
         var coursesWithInstructors = snapshot.data!;
+        print('Fetched courses with instructors: $coursesWithInstructors');
 
         return GridView.builder(
           shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 10.0,
               mainAxisSpacing: 10.0,
-              childAspectRatio: 1 / 12),
+              childAspectRatio: 1 / 1.5), // Adjust aspect ratio as needed
           itemCount: coursesWithInstructors.length,
           itemBuilder: (context, index) {
             final courseData = coursesWithInstructors[index];
@@ -147,41 +150,46 @@ class _CourseWidgetState extends State<CourseWidget> {
   }
 
   Future<List<Map<String, dynamic>>> fetchCombinedData() async {
-    final courseQuerySnapshot = await FirebaseFirestore.instance
-        .collection('courses')
-        .where('rank', isEqualTo: widget.rank)
-        .orderBy('created_at', descending: true)
-        .get();
+    try {
+      final courseQuerySnapshot = await FirebaseFirestore.instance
+          .collection('courses')
+          .where('rank', isEqualTo: widget.rank)
+          .orderBy('created_at', descending: true)
+          .get();
 
-    final instructorFutures =
-        <Future<DocumentSnapshot<Map<String, dynamic>>>>[];
-    final courses = courseQuerySnapshot.docs.map((doc) {
-      final course = Course.fromFirestore(doc);
-      instructorFutures.add(course.instructor
-          .withConverter<Map<String, dynamic>>(
-            fromFirestore: (snapshot, _) => snapshot.data()!,
-            toFirestore: (instructor, _) => {},
-          )
-          .get());
-      return course;
-    }).toList();
+      final instructorFutures =
+          <Future<DocumentSnapshot<Map<String, dynamic>>>>[];
+      final courses = courseQuerySnapshot.docs.map((doc) {
+        final course = Course.fromFirestore(doc);
+        instructorFutures.add(course.instructor
+            .withConverter<Map<String, dynamic>>(
+              fromFirestore: (snapshot, _) => snapshot.data()!,
+              toFirestore: (instructor, _) => {},
+            )
+            .get());
+        return course;
+      }).toList();
 
-    final instructorSnapshots = await Future.wait(instructorFutures);
-    final instructorMap = <String, String>{};
-    for (var snapshot in instructorSnapshots) {
-      if (snapshot.exists) {
-        final instructorData = Instructor.fromFirestore(snapshot);
-        instructorMap[snapshot.id] = instructorData.name ?? '';
+      final instructorSnapshots = await Future.wait(instructorFutures);
+      final instructorMap = <String, String>{};
+      for (var snapshot in instructorSnapshots) {
+        if (snapshot.exists) {
+          final instructorData = Instructor.fromFirestore(snapshot);
+          instructorMap[snapshot.id] = instructorData.name ?? '';
+        }
       }
-    }
-    final coursesWithInstructors = courses.map((course) {
-      return {
-        'course': course,
-        'instructorName':
-            instructorMap[course.instructor.id] ?? 'Instructor not found'
-      };
-    }).toList();
+      final coursesWithInstructors = courses.map((course) {
+        return {
+          'course': course,
+          'instructorName':
+              instructorMap[course.instructor.id] ?? 'Instructor not found'
+        };
+      }).toList();
 
-    return coursesWithInstructors;
+      return coursesWithInstructors;
+    } catch (e) {
+      print('Error fetching combined data: $e');
+      return [];
+    }
   }
 }

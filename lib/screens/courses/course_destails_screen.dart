@@ -29,6 +29,25 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
     super.initState();
   }
 
+  // bool applyChanges = false;
+
+  // void initAnimation() async {
+  //   await Future.delayed(const Duration(milliseconds: 500));
+  //   if (!mounted) return;
+  //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+  //     setState(() {
+  //       applyChanges = true;
+  //     });
+  //   });
+  // }
+
+  // @override
+  // void didChangeDependencies() {
+  //   initAnimation();
+
+  //   super.didChangeDependencies();
+  // }
+
   @override
   Widget build(BuildContext context) {
     final course = widget.courseData['course'] as Course;

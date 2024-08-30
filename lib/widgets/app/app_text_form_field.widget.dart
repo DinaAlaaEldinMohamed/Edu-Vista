@@ -23,46 +23,40 @@ class AppTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 20,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              labelText,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            labelText,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
           ),
-          SizedBox(
-            height: 45,
-            child: TextFormField(
-              onChanged: onChanged,
-              controller: controller,
-              obscureText: obscureText ?? false,
-              keyboardType: keyboardType,
-              validator: validator,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(7),
-                  borderSide: const BorderSide(color: ColorUtility.borderColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(7),
-                  borderSide:
-                      const BorderSide(color: ColorUtility.darkGreyColor),
-                ),
-                hintText: hintText,
+        ),
+        SizedBox(
+          height: 45,
+          child: TextFormField(
+            onChanged: onChanged,
+            controller: controller,
+            obscureText: obscureText ?? false,
+            keyboardType: keyboardType,
+            validator: validator,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(7),
+                borderSide: const BorderSide(color: ColorUtility.borderColor),
               ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(7),
+                borderSide: const BorderSide(color: ColorUtility.darkGreyColor),
+              ),
+              hintText: hintText,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

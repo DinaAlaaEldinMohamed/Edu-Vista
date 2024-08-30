@@ -1,4 +1,6 @@
+import 'package:edu_vista/screens/auth/forgot_password_screen.dart';
 import 'package:edu_vista/screens/auth/login_screen.dart';
+import 'package:edu_vista/screens/auth/password_reset_confirmation.dart';
 import 'package:edu_vista/screens/auth/signup_screen.dart';
 import 'package:edu_vista/screens/categories/categories_screen.dart';
 import 'package:edu_vista/screens/courses/course_destails_screen.dart';
@@ -20,6 +22,13 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case SignUpScreen.route:
         return MaterialPageRoute(builder: (_) => const SignUpScreen());
+      case ForgotPasswordScreen.route:
+        return MaterialPageRoute(builder: (_) => const ForgotPasswordScreen());
+      case PasswordResetConfirmationScreen.route:
+        final oobCode = settings.arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => PasswordResetConfirmationScreen(oobCode: oobCode),
+        );
       case HomeScreen.route:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case CategoriesScreen.route:
@@ -31,7 +40,6 @@ class AppRouter {
             builder: (_) => CourseDetailsScreen(
                   courseData: data,
                 ));
-
       default:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
     }

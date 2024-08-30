@@ -1,3 +1,4 @@
+import 'package:edu_vista/screens/auth/login_screen.dart';
 import 'package:edu_vista/screens/home/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());
 
+  // Login Method
   Future<void> login({
     required BuildContext context,
     required TextEditingController emailController,
@@ -21,43 +23,23 @@ class AuthCubit extends Cubit<AuthState> {
 
       if (credentials.user != null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            backgroundColor: Colors.green,
-            content: Text(
-                'User:  ${credentials.user?.displayName} logged in successfully')));
+          backgroundColor: Colors.green,
+          content: Text(
+              'User: ${credentials.user?.displayName} logged in successfully'),
+        ));
 
         emit(LoginSuccess());
         Navigator.pushReplacementNamed(context, HomeScreen.route);
       }
     } on FirebaseAuthException catch (e) {
       if (!context.mounted) return;
-      if (e.code == 'user-not-found') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No user found for that email.'),
-          ),
-        );
-      } else if (e.code == 'wrong-password') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Wrong password provided for that user.'),
-          ),
-        );
-      } else if (e.code == 'user-disabled') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('User Disabled'),
-          ),
-        );
-      } else if (e.code == 'invalid-credential') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Invalid Credential'),
-          ),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.message}'),
+        ),
+      );
     } catch (e) {
       if (!context.mounted) return;
-
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Something went wrong'),
@@ -66,6 +48,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  // SignUp Method
   Future<void> signUp({
     required BuildContext context,
     required TextEditingController nameController,
@@ -81,35 +64,88 @@ class AuthCubit extends Cubit<AuthState> {
       if (credentials.user != null) {
         credentials.user!.updateDisplayName(nameController.text);
 
-        if (!context.mounted) return;
-
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             backgroundColor: Colors.green,
             content: Text('Account created successfully'),
           ),
         );
+
+        emit(SignupSuccess());
       }
     } on FirebaseAuthException catch (e) {
       if (!context.mounted) return;
-      if (e.code == 'weak-password') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('The password provided is too weak.'),
-          ),
-        );
-      } else if (e.code == 'email-already-in-use') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('The account already exists for that email.'),
-          ),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Sign up Error: ${e.message}'),
+        ),
+      );
     } catch (e) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Sign up Exception $e'),
+          content: Text('Sign up Exception: $e'),
+        ),
+      );
+    }
+  }
+
+  // Forgot Password Method
+  Future<void> forgotPassword({
+    required BuildContext context,
+    required TextEditingController emailController,
+  }) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: emailController.text,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.green,
+          content: Text('Password reset email sent successfully'),
+        ),
+      );
+      emit(ForgotPasswordSuccess());
+    } on FirebaseAuthException catch (e) {
+      if (!context.mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.message}'),
+        ),
+      );
+    }
+  }
+
+  // Reset Password Method
+  Future<void> resetPassword({
+    required BuildContext context,
+    required String oobCode, // The code from the password reset email
+    required TextEditingController newPasswordController,
+  }) async {
+    try {
+      await FirebaseAuth.instance.confirmPasswordReset(
+        code: oobCode,
+        newPassword: newPasswordController.text,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.green,
+          content: Text('Password reset successfully'),
+        ),
+      );
+
+      emit(ResetPasswordSuccess());
+
+      Navigator.pushReplacementNamed(context, LoginScreen.route);
+    } on FirebaseAuthException catch (e) {
+      if (!context.mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: ${e.message}'),
         ),
       );
     }
