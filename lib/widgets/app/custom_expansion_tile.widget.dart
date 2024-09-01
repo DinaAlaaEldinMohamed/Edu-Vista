@@ -1,13 +1,17 @@
-import 'package:flutter/cupertino.dart';
+import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:flutter/material.dart';
 
 class CustomExpansionTile extends StatefulWidget {
   final String title;
   final List<Widget> children;
+  final IconData collapasedIcon;
+  final IconData expandedIcon;
 
   const CustomExpansionTile({
     required this.title,
     required this.children,
+    this.collapasedIcon = Icons.keyboard_double_arrow_right,
+    this.expandedIcon = Icons.keyboard_double_arrow_down,
     super.key,
   });
 
@@ -32,9 +36,11 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
             padding:
                 const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: _isExpanded ? Colors.white : ColorUtility.greyColor,
               border: Border.all(
-                color: _isExpanded ? Colors.yellow : Colors.transparent,
+                color: _isExpanded
+                    ? ColorUtility.secondaryColor
+                    : Colors.transparent,
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(4.0),
@@ -45,15 +51,17 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
                 Text(
                   widget.title,
                   style: TextStyle(
-                    color: _isExpanded ? Colors.yellow : Colors.black,
+                    color: _isExpanded
+                        ? ColorUtility.secondaryColor
+                        : ColorUtility.blackColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Icon(
-                  _isExpanded
-                      ? Icons.keyboard_double_arrow_down
-                      : Icons.keyboard_double_arrow_right,
-                  color: _isExpanded ? Colors.yellow : Colors.black,
+                  _isExpanded ? widget.expandedIcon : widget.collapasedIcon,
+                  color: _isExpanded
+                      ? ColorUtility.secondaryColor
+                      : ColorUtility.blackColor,
                 ),
               ],
             ),

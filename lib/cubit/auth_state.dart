@@ -57,3 +57,39 @@ final class ResetPasswordFailed extends ResetPasswordState {
 
   ResetPasswordFailed(this.error);
 }
+
+// update user data
+sealed class UpdateUserState extends AuthState {}
+
+final class UpdateUserLoading extends UpdateUserState {}
+
+class UpdateUserSuccess extends UpdateUserState {
+  final User user;
+  UpdateUserSuccess(this.user);
+}
+
+final class UpdateUserFailed extends UpdateUserState {
+  final String error;
+
+  UpdateUserFailed(this.error);
+}
+
+// Upload Profile Image
+sealed class ProfileImageState extends AuthState {}
+
+final class ProfileImagePicked extends ProfileImageState {
+  final File imageFile;
+  ProfileImagePicked(this.imageFile);
+}
+
+final class ProfileImageUploading extends ProfileImageState {}
+
+final class ProfileImageUploaded extends ProfileImageState {
+  final String downloadUrl;
+  ProfileImageUploaded(this.downloadUrl);
+}
+
+final class ProfileImageFailed extends ProfileImageState {
+  final String error;
+  ProfileImageFailed(this.error);
+}

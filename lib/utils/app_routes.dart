@@ -7,6 +7,7 @@ import 'package:edu_vista/screens/courses/course_destails_screen.dart';
 import 'package:edu_vista/screens/courses/courses_list_screen.dart';
 import 'package:edu_vista/screens/home/home_screen.dart';
 import 'package:edu_vista/screens/onBoarding/onboarding_screen.dart';
+import 'package:edu_vista/screens/profile/profile_screen.dart';
 import 'package:edu_vista/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case CategoriesScreen.route:
         return MaterialPageRoute(builder: (_) => const CategoriesScreen());
+      case ProfileScreen.route:
+        return MaterialPageRoute(builder: (_) => const ProfileScreen());
       case CoursesListScreen.route:
         return MaterialPageRoute(builder: (_) => const CoursesListScreen());
       case CourseDetailsScreen.route:

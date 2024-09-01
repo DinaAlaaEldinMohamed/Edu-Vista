@@ -3,23 +3,24 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class AppTextFormField extends StatelessWidget {
-  String hintText;
-  String labelText;
-  TextInputType? keyboardType;
-  TextEditingController? controller;
-  void Function(String)? onChanged;
-  String? Function(String?)? validator;
-  bool? obscureText;
+  final String hintText;
+  final String labelText;
+  final TextInputType? keyboardType;
+  final TextEditingController? controller;
+  final void Function(String)? onChanged;
+  final String? Function(String?)? validator;
+  final bool? obscureText;
 
-  AppTextFormField(
-      {required this.hintText,
-      this.keyboardType,
-      required this.labelText,
-      this.controller,
-      this.onChanged,
-      this.validator,
-      this.obscureText,
-      super.key});
+  AppTextFormField({
+    required this.hintText,
+    this.keyboardType,
+    required this.labelText,
+    this.controller,
+    this.onChanged,
+    this.validator,
+    this.obscureText,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

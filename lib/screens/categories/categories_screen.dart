@@ -1,9 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/models/category.dart';
-import 'package:edu_vista/models/course.dart';
-import 'package:edu_vista/models/instructors.dart';
+import 'package:edu_vista/repositoy/categories_repo.dart';
+import 'package:edu_vista/screens/layout/base_layout.dart';
+import 'package:edu_vista/utils/colors_utils.dart';
+import 'package:edu_vista/utils/text_utility.dart';
+import 'package:edu_vista/widgets/app/cart_icon_btn.widget.dart';
 import 'package:edu_vista/widgets/categories/category_course.widget.dart';
-import 'package:edu_vista/widgets/categories/custom_expansion_tile.widget.dart';
+import 'package:edu_vista/widgets/app/custom_expansion_tile.widget.dart';
 import 'package:flutter/material.dart';
 
 class CategoriesScreen extends StatelessWidget {
@@ -13,15 +15,28 @@ class CategoriesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Categories and Courses'),
+    final CategoryRepository categoryRepository = CategoryRepository();
+    return BaseLayout(
+      changeAppbar: true,
+      customAppBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          color: ColorUtility.primaryColor,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Center(
+            child: Text('Categories', style: TextUtils.headlineStyle)),
+        actions: const [
+          CartIconButton(),
+        ],
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(20),
           child: FutureBuilder<List<Category>>(
-            future: _fetchCategories(),
+            future: categoryRepository.fetchCategories(),
             builder: (context, categorySnapshot) {
               if (categorySnapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -51,7 +66,8 @@ class CategoriesScreen extends StatelessWidget {
                   }
 
                   return FutureBuilder<List<Map<String, dynamic>>>(
-                    future: _fetchCoursesWithInstructors(categoryId),
+                    future: categoryRepository
+                        .fetchCoursesWithInstructors(categoryId),
                     builder: (context, courseSnapshot) {
                       if (courseSnapshot.connectionState ==
                           ConnectionState.waiting) {
@@ -86,73 +102,5 @@ class CategoriesScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<List<Category>> _fetchCategories() async {
-    try {
-      final QuerySnapshot categorySnapshot = await FirebaseFirestore.instance
-          .collection('categories')
-          .orderBy('order')
-          .get();
-      final categories = categorySnapshot.docs.map((doc) {
-        final data = doc.data() as Map<String, dynamic>;
-        return Category.fromJson({
-          'id': doc.id,
-          ...data,
-        });
-      }).toList();
-      print(
-          'Categories fetched: ${categories.map((c) => c.toJson()).toList()}');
-      return categories;
-    } catch (e) {
-      print('Error fetching categories: $e');
-      return [];
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> _fetchCoursesWithInstructors(
-      String categoryId) async {
-    try {
-      final QuerySnapshot courseSnapshot = await FirebaseFirestore.instance
-          .collection('courses')
-          .where('category',
-              isEqualTo:
-                  FirebaseFirestore.instance.doc('categories/$categoryId'))
-          .get();
-
-      final instructorFutures =
-          <Future<DocumentSnapshot<Map<String, dynamic>>>>[];
-      final courses = courseSnapshot.docs.map((doc) {
-        final course = Course.fromFirestore(doc);
-        instructorFutures.add(course.instructor
-            .withConverter<Map<String, dynamic>>(
-              fromFirestore: (snapshot, _) => snapshot.data()!,
-              toFirestore: (instructor, _) => {},
-            )
-            .get());
-        return course;
-      }).toList();
-
-      final instructorSnapshots = await Future.wait(instructorFutures);
-      final instructorMap = <String, String>{};
-      for (var snapshot in instructorSnapshots) {
-        if (snapshot.exists) {
-          final instructorData = Instructor.fromFirestore(snapshot);
-          instructorMap[snapshot.id] = instructorData.name ?? '';
-        }
-      }
-      final coursesWithInstructors = courses.map((course) {
-        return {
-          'course': course,
-          'instructorName':
-              instructorMap[course.instructor.id] ?? 'Instructor not found'
-        };
-      }).toList();
-
-      return coursesWithInstructors;
-    } catch (e) {
-      print('Error fetching combined data: $e');
-      return [];
-    }
   }
 }

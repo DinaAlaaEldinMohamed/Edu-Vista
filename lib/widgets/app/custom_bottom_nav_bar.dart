@@ -1,4 +1,5 @@
 import 'package:edu_vista/utils/colors_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
@@ -15,6 +16,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return BottomNavigationBar(
       backgroundColor: Colors.white,
       unselectedItemColor: Colors.black,
@@ -61,7 +64,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
               children: [
                 CircleAvatar(
                     backgroundColor: Colors.white,
-                    radius: 15, // Adjust size as needed
+                    radius: 15,
                     backgroundImage: NetworkImage(profileImageUrl!)),
                 if (currentIndex == index)
                   Positioned(

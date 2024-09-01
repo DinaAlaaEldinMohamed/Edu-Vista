@@ -1,14 +1,16 @@
+import 'package:edu_vista/cubit/auth_cubit.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
-import 'package:edu_vista/utils/images_utils.dart';
+import 'package:edu_vista/widgets/app/cart_icon_btn.widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:edu_vista/widgets/app/custom_bottom_nav_bar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BaseLayout extends StatefulWidget {
   final AppBar? customAppBar;
   final Widget body;
   final Widget? floatingActionButton;
-  final String? profileImageUrl;
+
   final bool changeAppbar;
 
   const BaseLayout({
@@ -16,7 +18,6 @@ class BaseLayout extends StatefulWidget {
     this.customAppBar,
     required this.body,
     this.floatingActionButton,
-    this.profileImageUrl,
     this.changeAppbar = false,
   });
 
@@ -27,6 +28,22 @@ class BaseLayout extends StatefulWidget {
 class _BaseLayoutState extends State<BaseLayout> {
   int _selectedIndex = 0;
   User? user = FirebaseAuth.instance.currentUser;
+  @override
+  void initState() {
+    super.initState();
+    _listenToAuthChanges();
+  }
+
+  void _listenToAuthChanges() {
+    // Listen to changes in AuthCubit state
+    BlocProvider.of<AuthCubit>(context).stream.listen((state) {
+      if (state is ProfileImageUploaded) {
+        setState(() {
+          user = FirebaseAuth.instance.currentUser;
+        });
+      }
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -35,6 +52,8 @@ class _BaseLayoutState extends State<BaseLayout> {
         Navigator.pushNamed(context, '/home');
       } else if (index == 1) {
         Navigator.pushNamed(context, '/courses');
+      } else if (index == 4) {
+        Navigator.pushNamed(context, '/profile');
       }
     });
   }
@@ -52,17 +71,9 @@ class _BaseLayoutState extends State<BaseLayout> {
               automaticallyImplyLeading: false,
               toolbarHeight: 80,
               title: _buildWelcomeText(),
-              actions: [
-                IconButton(
-                  icon: Image.asset(
-                    ImagesUtils.cartIcon,
-                    width: 22,
-                    height: 22,
-                  ),
-                  tooltip: 'Shopping Cart',
-                  onPressed: () {},
-                ),
-                const SizedBox(width: 10),
+              actions: const [
+                CartIconButton(),
+                SizedBox(width: 10),
               ],
             ),
       body: LayoutBuilder(
@@ -86,7 +97,7 @@ class _BaseLayoutState extends State<BaseLayout> {
           : CustomBottomNavigationBar(
               currentIndex: _selectedIndex,
               onTap: _onItemTapped,
-              profileImageUrl: widget.profileImageUrl),
+              profileImageUrl: user?.photoURL),
     );
   }
 

@@ -6,7 +6,6 @@ import 'package:edu_vista/widgets/courses/course_options.widget.dart';
 import 'package:edu_vista/widgets/lectures/video_box.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:video_box/video_box.dart';
 
 class CourseDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> courseData;
