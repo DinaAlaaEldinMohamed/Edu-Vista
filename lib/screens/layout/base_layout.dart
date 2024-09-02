@@ -1,6 +1,13 @@
 import 'package:edu_vista/cubit/auth_cubit.dart';
+import 'package:edu_vista/screens/courses/courses_list_screen.dart';
+import 'package:edu_vista/screens/home/chat_screen.dart';
+import 'package:edu_vista/screens/home/home_screen.dart';
+import 'package:edu_vista/screens/home/search_screen.dart';
+import 'package:edu_vista/screens/profile/profile_screen.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
+
 import 'package:edu_vista/widgets/app/cart_icon_btn.widget.dart';
+import 'package:edu_vista/widgets/app/custom_appbar.widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:edu_vista/widgets/app/custom_bottom_nav_bar.dart';
@@ -10,7 +17,6 @@ class BaseLayout extends StatefulWidget {
   final AppBar? customAppBar;
   final Widget body;
   final Widget? floatingActionButton;
-
   final bool changeAppbar;
 
   const BaseLayout({
@@ -28,6 +34,8 @@ class BaseLayout extends StatefulWidget {
 class _BaseLayoutState extends State<BaseLayout> {
   int _selectedIndex = 0;
   User? user = FirebaseAuth.instance.currentUser;
+  final PageController _pageController = PageController();
+
   @override
   void initState() {
     super.initState();
@@ -35,7 +43,6 @@ class _BaseLayoutState extends State<BaseLayout> {
   }
 
   void _listenToAuthChanges() {
-    // Listen to changes in AuthCubit state
     BlocProvider.of<AuthCubit>(context).stream.listen((state) {
       if (state is ProfileImageUploaded) {
         setState(() {
@@ -45,51 +52,60 @@ class _BaseLayoutState extends State<BaseLayout> {
     });
   }
 
+  final List<Widget> _pages = [
+    const HomeScreen(),
+    const CoursesListScreen(),
+    const SearchScreen(),
+    const ChatScreen(),
+    const ProfileScreen(),
+  ];
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      if (index == 0) {
-        Navigator.pushNamed(context, '/home');
-      } else if (index == 1) {
-        Navigator.pushNamed(context, '/courses');
-      } else if (index == 4) {
-        Navigator.pushNamed(context, '/profile');
-      }
     });
+    _pageController.jumpToPage(index);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Retrieve screen size and orientation
     final Size screenSize = MediaQuery.of(context).size;
     final bool isLandscape = screenSize.width > screenSize.height;
 
     return Scaffold(
       appBar: widget.changeAppbar
           ? widget.customAppBar
-          : AppBar(
-              automaticallyImplyLeading: false,
-              toolbarHeight: 80,
-              title: _buildWelcomeText(),
-              actions: const [
-                CartIconButton(),
-                SizedBox(width: 10),
-              ],
-            ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth > 600) {
-            return Row(
-              children: [
-                Expanded(
-                  child: widget.body,
+          : _selectedIndex == 0
+              ? AppBar(
+                  automaticallyImplyLeading: false,
+                  toolbarHeight: 80,
+                  title: _buildWelcomeText(),
+                  actions: const [
+                    CartIconButton(),
+                    SizedBox(width: 10),
+                  ],
+                )
+              : CustomAppBar(
+                  title: _selectedIndex == 1
+                      ? 'Courses'
+                      : _selectedIndex == 2
+                          ? 'Search'
+                          : _selectedIndex == 3
+                              ? 'Chat'
+                              : 'Profile',
+                  actions: const [
+                    CartIconButton(),
+                    SizedBox(width: 10),
+                  ],
                 ),
-              ],
-            );
-          } else {
-            return widget.body;
-          }
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
         },
+        children: _pages,
       ),
       floatingActionButton: widget.floatingActionButton,
       bottomNavigationBar: isLandscape
@@ -97,7 +113,8 @@ class _BaseLayoutState extends State<BaseLayout> {
           : CustomBottomNavigationBar(
               currentIndex: _selectedIndex,
               onTap: _onItemTapped,
-              profileImageUrl: user?.photoURL),
+              profileImageUrl: user?.photoURL,
+            ),
     );
   }
 

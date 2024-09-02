@@ -1,5 +1,4 @@
 import 'package:edu_vista/utils/colors_utils.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomNavigationBar extends StatelessWidget {
@@ -16,14 +15,13 @@ class CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-
     return BottomNavigationBar(
       backgroundColor: Colors.white,
       unselectedItemColor: Colors.black,
       selectedItemColor: ColorUtility.secondaryColor,
       type: BottomNavigationBarType.fixed,
       showSelectedLabels: false,
+      showUnselectedLabels: false,
       items: [
         _buildNavItem(Icons.home, 0),
         _buildNavItem(Icons.import_contacts, 1),
@@ -43,12 +41,17 @@ class CustomBottomNavigationBar extends StatelessWidget {
           Icon(icon),
           if (currentIndex == index)
             Positioned(
-              bottom: -8, // Position the underline below the icon
+              bottom: 0,
               left: 0,
               right: 0,
-              child: Divider(
-                thickness: 2,
-                color: ColorUtility.secondaryColor, // Underline color
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  Container(
+                    height: 2,
+                    color: ColorUtility.secondaryColor,
+                  ),
+                ],
               ),
             ),
         ],
@@ -61,18 +64,21 @@ class CustomBottomNavigationBar extends StatelessWidget {
     return BottomNavigationBarItem(
       icon: profileImageUrl != null
           ? Stack(
+              clipBehavior:
+                  Clip.none, // Ensure the stack does not clip its children
               children: [
                 CircleAvatar(
-                    backgroundColor: Colors.white,
-                    radius: 15,
-                    backgroundImage: NetworkImage(profileImageUrl!)),
+                  backgroundColor: Colors.white,
+                  radius: 15,
+                  backgroundImage: NetworkImage(profileImageUrl!),
+                ),
                 if (currentIndex == index)
                   Positioned(
-                    bottom: -8,
+                    bottom: -3,
                     left: 0,
                     right: 0,
                     child: Container(
-                      height: 3,
+                      height: 2,
                       color: ColorUtility.secondaryColor,
                     ),
                   ),

@@ -12,9 +12,9 @@ class Course {
   Timestamp createdAt;
   bool hasCertificate;
   String currency;
-  String rank;
-  //int enrollments;
-  //Map<String, int> rankings;
+  List<String> ranks;
+  int enrollments;
+
   Course({
     required this.id,
     required this.title,
@@ -27,18 +27,17 @@ class Course {
     required this.createdAt,
     required this.hasCertificate,
     required this.currency,
-    required this.rank,
-    //required this.enrollments,
-    // required this.rankings,
+    required this.ranks,
+    required this.enrollments,
   });
 
-  // Factory method to create a Course instance from a Firestore document
   factory Course.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
+
     return Course(
       id: doc.id,
-      title: data['title'],
-      image: data['image'],
+      title: data['title'] as String,
+      image: data['image'] as String,
       category: data['category'] is DocumentReference
           ? data['category'] as DocumentReference
           : FirebaseFirestore.instance.doc(data['category'] as String),
@@ -47,23 +46,21 @@ class Course {
           : FirebaseFirestore.instance.doc(data['instructor'] as String),
       duration: data['duration'] is int
           ? (data['duration'] as int).toDouble()
-          : data['duration'],
+          : (data['duration'] as double? ?? 0.0),
       rating: data['rating'] is int
           ? (data['rating'] as int).toDouble()
-          : data['rating'],
+          : (data['rating'] as double? ?? 0.0),
       price: data['price'] is int
           ? (data['price'] as int).toDouble()
-          : data['price'],
-      createdAt: data['created_at'],
-      hasCertificate: data['has_certificate'],
-      currency: data['currency'],
-      rank: data['rank'],
-      // enrollments: data['enrollments'],
-      //rankings: data['rankings'],
+          : (data['price'] as double? ?? 0.0),
+      createdAt: data['created_at'] as Timestamp,
+      hasCertificate: data['has_certificate'] as bool,
+      currency: data['currency'] as String,
+      ranks: List<String>.from(data['ranks'] ?? []),
+      enrollments: data['enrollments'] as int,
     );
   }
 
-  // Method to convert a Course instance to a Firestore-friendly format
   Map<String, dynamic> toFirestore() {
     return {
       'title': title,
@@ -76,7 +73,8 @@ class Course {
       'created_at': createdAt,
       'has_certificate': hasCertificate,
       'currency': currency,
-      'rank': rank,
+      'ranks': ranks,
+      'enrollments': enrollments,
     };
   }
 }

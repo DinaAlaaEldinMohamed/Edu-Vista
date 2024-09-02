@@ -1,15 +1,13 @@
 import 'package:edu_vista/screens/categories/categories_screen.dart';
-import 'package:edu_vista/screens/courses/courses_list_screen.dart';
-import 'package:edu_vista/screens/layout/base_layout.dart';
+import 'package:edu_vista/screens/courses/ranked_course_screen.dart';
 import 'package:edu_vista/widgets/app/label.widget.dart';
 import 'package:edu_vista/widgets/categories/category.widget.dart';
 import 'package:edu_vista/widgets/courses/course.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:edu_vista/services/ranking.service.dart';
 
 class HomeScreen extends StatefulWidget {
-  static const String route = '/home';
-
   const HomeScreen({super.key});
 
   @override
@@ -17,16 +15,31 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<String> rankTitles = [
-    'Because you Viewed',
-    'Students Also Search for',
-    'Top Courses in IT',
-    'Top Sellers',
-  ];
+  final Map<String, String> rankTitles = {
+    'Students Also Search for': 'students_search',
+    'Top Courses in IT': 'top_courses_it',
+    'Top Sellers': 'top_sellers',
+    'Because you Viewed': 'viewed',
+    'Top Rated': 'top rated',
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    _updateRankings();
+  }
+
+  Future<void> _updateRankings() async {
+    try {
+      await RankingService().updateCourseRankings();
+    } catch (e) {
+      print('Failed to update rankings: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BaseLayout(
+    return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: SingleChildScrollView(
@@ -42,21 +55,24 @@ class _HomeScreenState extends State<HomeScreen> {
               ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: rankTitles.length,
-                itemBuilder: (context, index) => Padding(
-                  padding: EdgeInsets.only(top: index == 0 ? 0 : 10.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      LabelTextwidget(
-                        label: rankTitles[index],
-                        linkText: 'See All',
-                        route: CoursesListScreen.route,
-                      ),
-                      const CourseWidget(rank: 'top rated'),
-                    ],
-                  ),
-                ),
+                itemCount: rankTitles.keys.length,
+                itemBuilder: (context, index) {
+                  final rankTitle = rankTitles.keys.elementAt(index);
+                  return Padding(
+                    padding: EdgeInsets.only(top: index == 0 ? 0 : 10.h),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        LabelTextwidget(
+                          label: rankTitle,
+                          linkText: 'See All',
+                          route: RankedCourseScreen.route,
+                        ),
+                        CourseWidget(rank: rankTitle),
+                      ],
+                    ),
+                  );
+                },
               ),
             ],
           ),

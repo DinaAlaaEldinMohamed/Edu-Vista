@@ -12,6 +12,6 @@ class CoursesListScreen extends StatefulWidget {
 class _CoursesScreenState extends State<CoursesListScreen> {
   @override
   Widget build(BuildContext context) {
-    return BaseLayout(body: Text('courses'));
+    return Scaffold(body: Text('courses'));
   }
 }

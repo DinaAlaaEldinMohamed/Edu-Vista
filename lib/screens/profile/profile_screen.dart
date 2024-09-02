@@ -30,7 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
-
+  bool _isExpanded = false;
   @override
   void initState() {
     super.initState();
@@ -88,15 +88,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  void _cancelEdit() {
+    setState(() {
+      _formKey.currentState?.reset();
+      _isExpanded = false; // Collapse the expansion tile
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BaseLayout(
-      changeAppbar: true,
-      customAppBar: AppBar(
-        title: const Center(
-            child: Text('Profile', style: TextUtils.headlineStyle)),
-        actions: const [CartIconButton()],
-      ),
+    return Scaffold(
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is UpdateUserSuccess) {
@@ -134,106 +135,112 @@ class _ProfileScreenState extends State<ProfileScreen> {
         builder: (context, state) {
           return Center(
             child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      CircleAvatar(
-                        radius: 100,
-                        backgroundImage: _user?.photoURL != null
-                            ? NetworkImage(_user!.photoURL!)
-                            : const AssetImage('assets/images/user.png')
-                                as ImageProvider,
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: 15,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: ColorUtility.primaryColor,
-                              width: 1,
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 100,
+                          backgroundImage: _user?.photoURL != null
+                              ? NetworkImage(_user!.photoURL!)
+                              : const AssetImage('assets/images/user.png')
+                                  as ImageProvider,
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 15,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: ColorUtility.primaryColor,
+                                width: 1,
+                              ),
+                            ),
+                            child: IconButton(
+                              icon: Image.asset(
+                                ImagesUtils.pickImageIcon,
+                              ),
+                              onPressed: _pickImage,
                             ),
                           ),
-                          child: IconButton(
-                            icon: Image.asset(
-                              ImagesUtils.pickImageIcon,
-                            ),
-                            onPressed: _pickImage,
+                        ),
+                        if (state is ProfileImageUploading)
+                          const Positioned(
+                            child: CircularProgressIndicator(),
                           ),
-                        ),
-                      ),
-                      if (state is ProfileImageUploading)
-                        const Positioned(
-                          child: CircularProgressIndicator(),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  Text(_user?.displayName ?? 'No Name',
-                      style: TextUtils.headlineStyle),
-                  Text(_user?.email ?? 'No Email',
-                      style: TextUtils.subheadline),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Text(_user?.displayName ?? 'No Name',
+                        style: TextUtils.headlineStyle),
+                    Text(_user?.email ?? 'No Email',
+                        style: TextUtils.subheadline),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Column(
                       children: [
                         Form(
                           key: _formKey,
-                          child: CustomExpansionTile(title: 'Edit', children: [
-                            AppTextFormField(
-                              hintText: 'Name',
-                              labelText: 'Name',
-                              controller: _nameController,
-                              validator: (value) => value?.isEmpty ?? true
-                                  ? 'Name cannot be empty'
-                                  : null,
-                            ),
-                            AppTextFormField(
-                              hintText: 'Phone',
-                              labelText: 'Phone',
-                              controller: _phoneController,
-                              validator: (value) => value?.isEmpty ?? true
-                                  ? 'Phone cannot be empty'
-                                  : null,
-                            ),
-                            AppTextFormField(
-                                hintText: '********************',
-                                labelText: 'Password',
-                                controller: _passwordController,
-                                obscureText: true,
-                                validator: (value) => value!.isNotEmpty
-                                    ? value.length < 10
-                                        ? 'short password'
-                                        : null
-                                    : null),
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  AppElvatedBtn(
-                                    onPressed: () {
-                                      _formKey.currentState?.reset();
-                                    },
-                                    title: 'Cancel',
-                                    backgroundColor: Colors.red,
+                          child: CustomExpansionTile(
+                              title: 'Edit',
+                              isExpanded: _isExpanded,
+                              onExpansionChanged: (expanded) {
+                                setState(() {
+                                  _isExpanded = expanded;
+                                });
+                              },
+                              children: [
+                                AppTextFormField(
+                                  hintText: 'Name',
+                                  labelText: 'Name',
+                                  controller: _nameController,
+                                  validator: (value) => value?.isEmpty ?? true
+                                      ? 'Name cannot be empty'
+                                      : null,
+                                ),
+                                AppTextFormField(
+                                  hintText: 'Phone',
+                                  labelText: 'Phone',
+                                  controller: _phoneController,
+                                  validator: (value) => value?.isEmpty ?? true
+                                      ? 'Phone cannot be empty'
+                                      : null,
+                                ),
+                                AppTextFormField(
+                                    hintText: '********************',
+                                    labelText: 'Password',
+                                    controller: _passwordController,
+                                    obscureText: true,
+                                    validator: (value) => value!.isNotEmpty
+                                        ? value.length < 10
+                                            ? 'short password'
+                                            : null
+                                        : null),
+                                Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      AppElvatedBtn(
+                                        onPressed: _cancelEdit,
+                                        title: 'Cancel',
+                                        backgroundColor: Colors.red,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      AppElvatedBtn(
+                                        onPressed: _updateUserData,
+                                        title: 'Update',
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(width: 8),
-                                  AppElvatedBtn(
-                                    onPressed: _updateUserData,
-                                    title: 'Update',
-                                  ),
-                                ],
-                              ),
-                            )
-                          ]),
+                                )
+                              ]),
                         ),
                         const CustomExpansionTile(
                             title: 'Setting', children: []),
@@ -243,14 +250,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             title: 'About Us', children: []),
                       ],
                     ),
-                  ),
-                  TextButton(
-                      onPressed: _logOut,
-                      child: const Text(
-                        'Log Out',
-                        style: TextStyle(color: Colors.red),
-                      ))
-                ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        TextButton(
+                            onPressed: _logOut,
+                            child: const Text(
+                              'Logout',
+                              style: TextStyle(
+                                  color: Colors.red,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700),
+                            )),
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
           );

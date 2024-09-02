@@ -1,3 +1,4 @@
+import 'package:edu_vista/home_page.dart';
 import 'package:edu_vista/models/category.dart';
 import 'package:edu_vista/repositoy/categories_repo.dart';
 import 'package:edu_vista/screens/layout/base_layout.dart';
@@ -16,14 +17,16 @@ class CategoriesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final CategoryRepository categoryRepository = CategoryRepository();
-    return BaseLayout(
-      changeAppbar: true,
-      customAppBar: AppBar(
+
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 90,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           color: ColorUtility.primaryColor,
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pushNamedAndRemoveUntil(
+                context, HomePage.route, (Route<dynamic> route) => false);
           },
         ),
         title: const Center(
@@ -34,7 +37,7 @@ class CategoriesScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.only(top: 40, right: 20, left: 20),
           child: FutureBuilder<List<Category>>(
             future: categoryRepository.fetchCategories(),
             builder: (context, categorySnapshot) {

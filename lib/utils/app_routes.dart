@@ -1,3 +1,4 @@
+import 'package:edu_vista/home_page.dart';
 import 'package:edu_vista/screens/auth/forgot_password_screen.dart';
 import 'package:edu_vista/screens/auth/login_screen.dart';
 import 'package:edu_vista/screens/auth/password_reset_confirmation.dart';
@@ -5,7 +6,10 @@ import 'package:edu_vista/screens/auth/signup_screen.dart';
 import 'package:edu_vista/screens/categories/categories_screen.dart';
 import 'package:edu_vista/screens/courses/course_destails_screen.dart';
 import 'package:edu_vista/screens/courses/courses_list_screen.dart';
+import 'package:edu_vista/screens/courses/ranked_course_screen.dart';
+import 'package:edu_vista/screens/home/chat_screen.dart';
 import 'package:edu_vista/screens/home/home_screen.dart';
+import 'package:edu_vista/screens/home/search_screen.dart';
 import 'package:edu_vista/screens/onBoarding/onboarding_screen.dart';
 import 'package:edu_vista/screens/profile/profile_screen.dart';
 import 'package:edu_vista/screens/splash_screen.dart';
@@ -13,7 +17,7 @@ import 'package:flutter/material.dart';
 
 class AppRouter {
   static Route generateRoute(RouteSettings settings) {
-    final dynamic data = settings.arguments as Map<String, dynamic>?;
+    final dynamic arguments = settings.arguments;
     switch (settings.name) {
       case SplashScreen.route:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
@@ -26,25 +30,45 @@ class AppRouter {
       case ForgotPasswordScreen.route:
         return MaterialPageRoute(builder: (_) => const ForgotPasswordScreen());
       case PasswordResetConfirmationScreen.route:
-        final oobCode = settings.arguments as String;
-        return MaterialPageRoute(
-          builder: (_) => PasswordResetConfirmationScreen(oobCode: oobCode),
-        );
-      case HomeScreen.route:
-        return MaterialPageRoute(builder: (_) => const HomeScreen());
+        if (arguments is String) {
+          return MaterialPageRoute(
+            builder: (_) => PasswordResetConfirmationScreen(oobCode: arguments),
+          );
+        }
+        return _errorRoute(); // Handle invalid argument type
+      case HomePage.route:
+        return MaterialPageRoute(builder: (_) => const HomePage());
       case CategoriesScreen.route:
         return MaterialPageRoute(builder: (_) => const CategoriesScreen());
       case ProfileScreen.route:
         return MaterialPageRoute(builder: (_) => const ProfileScreen());
       case CoursesListScreen.route:
         return MaterialPageRoute(builder: (_) => const CoursesListScreen());
+      case ChatScreen.route:
+        return MaterialPageRoute(builder: (_) => const ChatScreen());
+      case SearchScreen.route:
+        return MaterialPageRoute(builder: (_) => const SearchScreen());
+      case RankedCourseScreen.route:
+        return MaterialPageRoute(builder: (_) => const RankedCourseScreen());
       case CourseDetailsScreen.route:
-        return MaterialPageRoute(
+        if (arguments is Map<String, dynamic>) {
+          return MaterialPageRoute(
             builder: (_) => CourseDetailsScreen(
-                  courseData: data,
-                ));
+              courseData: arguments,
+            ),
+          );
+        }
+        return _errorRoute(); // Handle invalid argument type
       default:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
     }
+  }
+
+  static Route _errorRoute() {
+    return MaterialPageRoute(
+      builder: (_) => Scaffold(
+        body: Center(child: Text('Error: Invalid route arguments')),
+      ),
+    );
   }
 }
