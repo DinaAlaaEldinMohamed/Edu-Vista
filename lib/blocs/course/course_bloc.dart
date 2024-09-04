@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:edu_vista/models/course.dart';
-import 'package:edu_vista/models/lecture.dart';
 import 'package:edu_vista/utils/app_enums.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,26 +10,33 @@ class CourseBloc extends Bloc<CourseEvent, CourseState> {
   CourseBloc() : super(CourseInitial()) {
     on<CourseFetchEvent>(_onGetCourse);
     on<CourseOptionChosenEvent>(_onCourseOptionChosen);
-    on<LectureChosenEvent>(_onLectureChosen);
+    on<ResetCourseEvent>(_onResetCourse); // Handle the reset event
   }
-  Course? course;
+
+  Course? _course;
+  CourseOptions? _selectedOption;
 
   FutureOr<void> _onGetCourse(
       CourseFetchEvent event, Emitter<CourseState> emit) {
-    if (course != null) {
-      course = null;
-    }
-    course = event.course;
-    emit(CourseOptionStateChanges(CourseOptions.Lecture));
+    _course = event.course;
+    _selectedOption = CourseOptions.Lecture; // Default option
+
+    emit(CourseLoaded(_course!, _selectedOption!));
   }
 
   FutureOr<void> _onCourseOptionChosen(
       CourseOptionChosenEvent event, Emitter<CourseState> emit) {
-    emit(CourseOptionStateChanges(event.courseOptions));
+    _selectedOption = event.courseOptions;
+
+    if (_course != null) {
+      emit(CourseLoaded(_course!, _selectedOption!));
+    }
   }
 
-  FutureOr<void> _onLectureChosen(
-      LectureChosenEvent event, Emitter<CourseState> emit) {
-    emit(LectureChosenState(event.lecture));
+  FutureOr<void> _onResetCourse(
+      ResetCourseEvent event, Emitter<CourseState> emit) {
+    _course = null;
+    _selectedOption = null;
+    emit(CourseInitial());
   }
 }

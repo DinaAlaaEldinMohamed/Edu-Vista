@@ -1,5 +1,6 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:edu_vista/blocs/course/course_bloc.dart';
+import 'package:edu_vista/blocs/lecture/lecture_bloc.dart';
 import 'package:edu_vista/cubit/auth_cubit.dart';
 import 'package:edu_vista/firebase_options.dart';
 import 'package:edu_vista/screens/splash_screen.dart';
@@ -31,6 +32,7 @@ void main() async {
           providers: [
             BlocProvider(create: (ctx) => AuthCubit()),
             BlocProvider(create: (ctx) => CourseBloc()),
+            BlocProvider(create: (ctx) => LectureBloc()),
           ],
           child: const MyApp(),
         );

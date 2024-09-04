@@ -1,3 +1,4 @@
+import 'package:edu_vista/cart_page.dart';
 import 'package:edu_vista/utils/images_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,12 @@ class CartIconButton extends StatelessWidget {
         height: 22,
       ),
       tooltip: 'Shopping Cart',
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => CartPage()),
+        );
+      },
     );
   }
 }

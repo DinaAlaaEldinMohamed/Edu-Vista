@@ -1,7 +1,6 @@
 import 'package:edu_vista/home_page.dart';
 import 'package:edu_vista/models/category.dart';
 import 'package:edu_vista/repositoy/categories_repo.dart';
-import 'package:edu_vista/screens/layout/base_layout.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:edu_vista/utils/text_utility.dart';
 import 'package:edu_vista/widgets/app/cart_icon_btn.widget.dart';
@@ -65,7 +64,7 @@ class CategoriesScreen extends StatelessWidget {
 
                   final categoryId = category.id;
                   if (categoryId == null) {
-                    return ListTile(title: Text('Category ID is null'));
+                    return const ListTile(title: Text('Category ID is null'));
                   }
 
                   return FutureBuilder<List<Map<String, dynamic>>>(

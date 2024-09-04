@@ -8,7 +8,6 @@ import 'package:edu_vista/screens/courses/course_destails_screen.dart';
 import 'package:edu_vista/screens/courses/courses_list_screen.dart';
 import 'package:edu_vista/screens/courses/ranked_course_screen.dart';
 import 'package:edu_vista/screens/home/chat_screen.dart';
-import 'package:edu_vista/screens/home/home_screen.dart';
 import 'package:edu_vista/screens/home/search_screen.dart';
 import 'package:edu_vista/screens/onBoarding/onboarding_screen.dart';
 import 'package:edu_vista/screens/profile/profile_screen.dart';
@@ -66,7 +65,7 @@ class AppRouter {
 
   static Route _errorRoute() {
     return MaterialPageRoute(
-      builder: (_) => Scaffold(
+      builder: (_) => const Scaffold(
         body: Center(child: Text('Error: Invalid route arguments')),
       ),
     );

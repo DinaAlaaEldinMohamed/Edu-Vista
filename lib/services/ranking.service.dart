@@ -18,10 +18,8 @@ class RankingService {
           final courseData = courseDoc.data();
           final rating = courseData['rating'] is int
               ? (courseData['rating'] as int).toDouble()
-              : (courseData['rating'] as double? ??
-                  0.0); // Ensure it's a double
-          final enrollments =
-              (courseData['enrollments'] ?? 0) as int; // Ensure it's an int
+              : (courseData['rating'] as double? ?? 0.0);
+          final enrollments = (courseData['enrollments'] ?? 0) as int;
           final category = courseData['category'] as DocumentReference;
 
           List<String> newRanks = [];

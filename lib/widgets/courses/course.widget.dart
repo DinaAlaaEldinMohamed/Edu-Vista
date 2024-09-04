@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:edu_vista/models/cart_item.dart';
 import 'package:edu_vista/models/course.dart';
 import 'package:edu_vista/screens/courses/course_destails_screen.dart';
 import 'package:edu_vista/services/ranking.service.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:edu_vista/utils/text_utility.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -47,10 +49,11 @@ class _CourseWidgetState extends State<CourseWidget> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 10.0,
-              mainAxisSpacing: 10.0,
-              childAspectRatio: 1 / 1.5), // Adjust aspect ratio as needed
+            crossAxisCount: 2,
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 10.0,
+            childAspectRatio: 1 / 1.6,
+          ),
           itemCount: coursesWithInstructors.length,
           itemBuilder: (context, index) {
             final courseData = coursesWithInstructors[index];
@@ -76,69 +79,82 @@ class _CourseWidgetState extends State<CourseWidget> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              course.rating.toStringAsFixed(1),
-                              style: TextUtils.ratingTextstyle,
-                            ),
-                            const SizedBox(width: 8),
-                            Row(
-                              children: List.generate(
-                                5,
-                                (starIndex) {
-                                  if (starIndex < course.rating.floor()) {
-                                    return const Icon(
-                                      Icons.star,
-                                      color: ColorUtility.primaryColor,
-                                    );
-                                  } else if (starIndex < course.rating) {
-                                    return const Icon(
-                                      Icons.star_half,
-                                      color: ColorUtility.primaryColor,
-                                    );
-                                  } else {
-                                    return const Icon(
-                                      Icons.star_border,
-                                      color: ColorUtility.primaryColor,
-                                    );
-                                  }
-                                },
+                    // Wrapping this Column inside an Expanded widget
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                course.rating.toStringAsFixed(1),
+                                style: TextUtils.ratingTextstyle,
                               ),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          course.title,
-                          style: TextUtils.titleTextStyle,
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          children: [
-                            const SizedBox(
-                              height: 14,
-                              child: Icon(
-                                Icons.person_outline_rounded,
-                                size: 18,
+                              const SizedBox(width: 8),
+                              Row(
+                                children: List.generate(
+                                  5,
+                                  (starIndex) {
+                                    if (starIndex < course.rating.floor()) {
+                                      return const Icon(
+                                        Icons.star,
+                                        color: ColorUtility.primaryColor,
+                                      );
+                                    } else if (starIndex < course.rating) {
+                                      return const Icon(
+                                        Icons.star_half,
+                                        color: ColorUtility.primaryColor,
+                                      );
+                                    } else {
+                                      return const Icon(
+                                        Icons.star_border,
+                                        color: ColorUtility.primaryColor,
+                                      );
+                                    }
+                                  },
+                                ),
                               ),
-                            ),
-                            Text(instructorName),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          ' ${course.currency == 'dollar' ? '\$' : ''} ${course.price} ',
-                          style: TextUtils.priceTextStyle,
-                        )
-                      ],
-                    )
+                            ],
+                          ),
+                          Text(
+                            course.title,
+                            style: TextUtils.titleTextStyle,
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            children: [
+                              const SizedBox(
+                                height: 14,
+                                child: Icon(
+                                  Icons.person_outline_rounded,
+                                  size: 18,
+                                ),
+                              ),
+                              Text(instructorName),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                ' ${course.currency == 'dollar' ? '\$' : ''} ${course.price} ',
+                                style: TextUtils.priceTextStyle,
+                              ),
+                              IconButton(
+                                onPressed: () => _addToCart(course),
+                                icon: const Icon(Icons.add_shopping_cart),
+                                tooltip: 'Add to Cart',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -210,6 +226,42 @@ class _CourseWidgetState extends State<CourseWidget> {
     } catch (e) {
       print('Error fetching combined data: $e');
       return [];
+    }
+  }
+
+  Future<void> _addToCart(Course course) async {
+    try {
+      // Get the user ID (replace with actual logic to get the current user ID)
+      final userId = FirebaseAuth.instance.currentUser?.uid;
+      if (userId == null) {
+        throw Exception('User not logged in');
+      }
+
+      // Create a CartItem instance
+      final cartItem = CartItem(
+        id: DateTime.now().toString(), // Generate a unique ID for the cart item
+        courseId: course.id,
+        title: course.title,
+        price: course.price,
+        imageUrl: course.image,
+      );
+
+      // Add the item to the user's cart in Firestore
+      await FirebaseFirestore.instance
+          .collection('carts')
+          .doc(userId)
+          .collection('items')
+          .doc(cartItem.id) // Use a predefined ID for the cart item
+          .set(cartItem.toJson());
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Added to cart')),
+      );
+    } catch (e) {
+      print('Error adding item to cart: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to add to cart')),
+      );
     }
   }
 }

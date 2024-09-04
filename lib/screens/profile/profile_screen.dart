@@ -1,13 +1,12 @@
 import 'dart:io'; // Import this for File
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/cubit/auth_cubit.dart';
-import 'package:edu_vista/screens/layout/base_layout.dart';
+import 'package:edu_vista/screens/auth/login_screen.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:edu_vista/utils/images_utils.dart';
 import 'package:edu_vista/utils/text_utility.dart';
 import 'package:edu_vista/widgets/app/appButtons/app_elvated_btn.dart';
 import 'package:edu_vista/widgets/app/app_text_form_field.widget.dart';
-import 'package:edu_vista/widgets/app/cart_icon_btn.widget.dart';
 import 'package:edu_vista/widgets/app/custom_expansion_tile.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -78,7 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       await FirebaseAuth.instance.signOut();
       Navigator.pushReplacementNamed(
-          context, '/login'); // Navigate to login screen
+          context, LoginScreen.route); // Navigate to login screen
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

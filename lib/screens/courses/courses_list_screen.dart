@@ -1,4 +1,3 @@
-import 'package:edu_vista/screens/layout/base_layout.dart';
 import 'package:flutter/material.dart';
 
 class CoursesListScreen extends StatefulWidget {
@@ -12,6 +11,6 @@ class CoursesListScreen extends StatefulWidget {
 class _CoursesScreenState extends State<CoursesListScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: Text('courses'));
+    return const Scaffold(body: Text('courses'));
   }
 }
