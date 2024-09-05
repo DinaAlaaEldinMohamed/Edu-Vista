@@ -11,58 +11,61 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   PreferncesService.init();
+  await dotenv.load(fileName: ".env");
   try {
+    // Initialize Firebase
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    //await Ranking.setRankingData();
   } catch (e) {
-    print('Failed to initialize Firebase: $e');
+    print('Failed to initialize services: $e');
   }
 
   runApp(DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) {
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider(create: (ctx) => AuthCubit()),
-            BlocProvider(create: (ctx) => CourseBloc()),
-            BlocProvider(create: (ctx) => LectureBloc()),
-          ],
-          child: const MyApp(),
-        );
-      }));
+    enabled: !kReleaseMode,
+    builder: (context) {
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (ctx) => AuthCubit()),
+          BlocProvider(create: (ctx) => CourseBloc()),
+          BlocProvider(create: (ctx) => LectureBloc()),
+        ],
+        child: const MyApp(),
+      );
+    },
+  ));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-        designSize: const Size(390, 844),
-        minTextAdapt: true,
-        splitScreenMode: true,
-        builder: (_, child) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Edu Vista',
-            theme: ThemeData(
-              fontFamily: "PlusJakartaSans",
-              colorScheme:
-                  ColorScheme.fromSeed(seedColor: ColorUtility.primaryColor),
-              scaffoldBackgroundColor: ColorUtility.pageBackgroundColor,
-              useMaterial3: true,
-            ),
-            onGenerateRoute: AppRouter.generateRoute,
-            initialRoute: SplashScreen.route,
-          );
-        });
+      designSize: const Size(390, 844),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (_, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Edu Vista',
+          theme: ThemeData(
+            fontFamily: "PlusJakartaSans",
+            colorScheme:
+                ColorScheme.fromSeed(seedColor: ColorUtility.primaryColor),
+            scaffoldBackgroundColor: ColorUtility.pageBackgroundColor,
+            useMaterial3: true,
+          ),
+          onGenerateRoute: AppRouter.generateRoute,
+          initialRoute: SplashScreen.route,
+        );
+      },
+    );
   }
 }

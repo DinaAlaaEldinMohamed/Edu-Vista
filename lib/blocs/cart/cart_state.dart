@@ -17,3 +17,13 @@ class CartLoadFailure extends CartState {
 
   CartLoadFailure(this.error);
 }
+
+class CartCheckoutInProgress extends CartState {}
+
+class CartCheckoutSuccess extends CartState {}
+
+class CartCheckoutFailure extends CartState {
+  final String error;
+
+  CartCheckoutFailure(this.error);
+}

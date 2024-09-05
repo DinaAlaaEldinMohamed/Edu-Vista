@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/screens/categories/categories_screen.dart';
 import 'package:edu_vista/screens/courses/ranked_course_screen.dart';
+import 'package:edu_vista/widgets/app/appButtons/app_elvated_btn.dart';
 import 'package:edu_vista/widgets/app/label.widget.dart';
 import 'package:edu_vista/widgets/categories/category.widget.dart';
 import 'package:edu_vista/widgets/courses/course.widget.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:edu_vista/services/ranking.service.dart';

@@ -1,14 +1,13 @@
+import 'package:edu_vista/repositoy/course_repo.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/blocs/course/course_bloc.dart';
 import 'package:edu_vista/blocs/lecture/lecture_bloc.dart';
 import 'package:edu_vista/models/course.dart';
 import 'package:edu_vista/widgets/courses/course_chips.widget.dart';
 import 'package:edu_vista/widgets/courses/course_options.widget.dart';
 import 'package:edu_vista/widgets/lectures/video_box.widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class CourseDetailsScreen extends StatefulWidget {
   final Map<String, dynamic> courseData;
@@ -124,7 +123,7 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
 }
 
 class _BodyWidget extends StatelessWidget {
-  const _BodyWidget({super.key});
+  const _BodyWidget();
 
   @override
   Widget build(BuildContext context) {
@@ -149,20 +148,10 @@ class _BodyWidget extends StatelessWidget {
                   onLectureChosen: (lecture) async {
                     // Reset LectureBloc state before selecting a new lecture
                     context.read<LectureBloc>().add(ResetLectureEvent());
-
-                    // Update user progress
-                    try {
-                      FirebaseFirestore.instance
-                          .collection('course_user_progress')
-                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .update({state.course.id: FieldValue.increment(1)});
-                    } catch (e) {
-                      FirebaseFirestore.instance
-                          .collection('course_user_progress')
-                          .doc(FirebaseAuth.instance.currentUser!.uid)
-                          .set({state.course.id: 1});
-                    }
-
+                    final CourseRepository courseRepository =
+                        CourseRepository();
+                    await courseRepository
+                        .updateOrCreateUserProgress(state.course.id);
                     context
                         .read<LectureBloc>()
                         .add(LectureChosenEvent(lecture));

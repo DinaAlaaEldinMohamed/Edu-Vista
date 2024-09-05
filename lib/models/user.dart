@@ -1,29 +1,49 @@
-class UserMetaData {
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class UserMetadata {
   String? phoneNumber;
   String? address;
   String? university;
   int? age;
   String? bio;
-  //String? id;
-  UserMetaData({this.phoneNumber, this.address, this.university});
+  List<String> purchasedCourses;
 
-  UserMetaData.fromJson(Map<String, dynamic> json) {
-    // id = json['id'];
-    phoneNumber = json['phoneNumber'];
-    address = json['address'];
-    university = json['university'];
-    age = json['age'] as int?;
-    bio = json['bio'];
+  UserMetadata({
+    this.phoneNumber,
+    this.address,
+    this.university,
+    this.age,
+    this.bio,
+    this.purchasedCourses = const [],
+  });
+
+  // Factory method to create UserMetadata from Firestore document data
+  factory UserMetadata.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return UserMetadata(
+      phoneNumber: data['phoneNumber'],
+      address: data['address'],
+      university: data['university'],
+      age: data['age'] as int?,
+      bio: data['bio'],
+      purchasedCourses: List<String>.from(data['purchasedCourses'] ?? []),
+    );
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> json = <String, dynamic>{};
-    //json['id'] = id;
-    json['phoneNumber'] = phoneNumber;
-    json['address'] = address;
-    json['university'] = university;
-    json['age'] = age;
-    json['bio'] = bio;
-    return json;
+  // Convert UserMetadata object to Firestore-friendly data
+  Map<String, dynamic> toFirestore() {
+    return {
+      'phoneNumber': phoneNumber,
+      'address': address,
+      'university': university,
+      'age': age,
+      'bio': bio,
+      'purchasedCourses': purchasedCourses,
+    };
+  }
+
+  // Add a course to the purchasedCourses list
+  void addPurchasedCourse(String courseId) {
+    purchasedCourses.add(courseId);
   }
 }

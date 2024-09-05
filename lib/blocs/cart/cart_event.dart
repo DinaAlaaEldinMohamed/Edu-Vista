@@ -1,4 +1,3 @@
-// cart_event.dart
 part of 'cart_bloc.dart';
 
 abstract class CartEvent {}
@@ -19,4 +18,11 @@ class CartItemRemovedEvent extends CartEvent {
   final String cartItemId;
 
   CartItemRemovedEvent(this.cartItemId);
+}
+
+class CartCheckoutEvent extends CartEvent {
+  final String cartItemId;
+  final BuildContext context;
+
+  CartCheckoutEvent(this.cartItemId, this.context);
 }

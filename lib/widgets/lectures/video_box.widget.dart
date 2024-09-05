@@ -100,6 +100,8 @@ class _VideoBoxWidgetState extends State<VideoBoxWidget> {
 
 // Custom Controls Widget
 class CustomControls extends StatelessWidget {
+  const CustomControls({super.key});
+
   @override
   Widget build(BuildContext context) {
     final chewieController = ChewieController.of(context);

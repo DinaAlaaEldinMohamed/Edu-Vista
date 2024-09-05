@@ -1,43 +1,45 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:edu_vista/repositoy/ranking_repo.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CourseRepository {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+  // Update or create user progress
+  Future<void> updateOrCreateUserProgress(String courseId) async {
+    final progressRef = FirebaseFirestore.instance
+        .collection('course_user_progress')
+        .doc(userId);
 
-  Future<List<DocumentSnapshot>> fetchCoursesByRanking(
-      String rankingType) async {
-    RankingRepository rankingRepo = RankingRepository();
-    Map<String, String> rankingData = await rankingRepo.fetchRankingMetadata();
-
-    String field;
-    bool descending;
-
-    switch (rankingData[rankingType]) {
-      case 'Students Also Search for':
-        field = 'searchPopularity';
-        descending = true;
-        break;
-      case 'Top Courses in IT':
-        field = 'coursePopularity';
-        descending = true;
-        break;
-      case 'Top Sellers':
-        field = 'sales';
-        descending = true;
-        break;
-      case 'Because you Viewed':
-        field = 'viewCount';
-        descending = true;
-        break;
-      default:
-        throw Exception("Unknown ranking type");
+    try {
+      final docSnapshot = await progressRef.get();
+      if (docSnapshot.exists) {
+        // Document exists, update it
+        await progressRef.update({
+          courseId: FieldValue.increment(1),
+        });
+      } else {
+        // Document does not exist, create it
+        await progressRef.set({
+          courseId: 1,
+        });
+      }
+    } catch (e) {
+      print('Error updating or creating user progress: $e');
     }
+  }
 
-    QuerySnapshot querySnapshot = await _firestore
-        .collection('courses')
-        .orderBy(field, descending: descending)
-        .get();
+  // Fetch user purchased courses
+  Future<List<String>> getUserPurchasedCourses(String userId) async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('purchasedCourses')
+          .get();
 
-    return querySnapshot.docs;
+      return snapshot.docs.map((doc) => doc.id).toList();
+    } catch (e) {
+      print('Error fetching user purchased courses: $e');
+      return [];
+    }
   }
 }
