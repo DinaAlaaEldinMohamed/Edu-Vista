@@ -77,24 +77,24 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         iFrameID: int.parse(dotenv.get('iFrameID')),
       );
 
+      // Ensure amountInCents is calculated correctly
+      final amountInCents = (cartItem.course?.price ?? 0) * 100 * 50;
+
       final PaymobResponse? response = await PaymobPayment.instance.pay(
         context: event.context,
         currency: "EGP",
-        amountInCents: '${cartItem.price * 100 * 50}',
+        amountInCents: amountInCents.toString(), // Convert amount to string
       );
 
       if (response != null) {
         if (response.success == true) {
-          // Remove the checked-out item from Firestore
           await _cartService.removeCartItem(event.cartItemId);
 
-          // Add the course to purchased courses
           await _cartService.addCourseToPurchased(cartItem.id);
 
-          // Fetch updated cart items
           final updatedCartItems = await _cartService.getCartItems();
           print(
-              'Updated cart items after checkout: ${updatedCartItems.map((item) => item.id).toList()}'); // Logging
+              'Updated cart items after checkout: ${updatedCartItems.map((item) => item.id).toList()}');
 
           emit(CartLoadSuccess(updatedCartItems));
 
@@ -111,6 +111,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
     } catch (e) {
       emit(CartLoadFailure('Failed to checkout: $e'));
+      print('checkout failed ============================$e');
     }
   }
 }

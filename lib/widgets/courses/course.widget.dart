@@ -3,7 +3,7 @@ import 'package:edu_vista/models/cart_item.dart';
 import 'package:edu_vista/models/course.dart';
 import 'package:edu_vista/screens/courses/course_destails_screen.dart';
 import 'package:edu_vista/services/ranking.service.dart';
-import 'package:edu_vista/utils/colors_utils.dart';
+import 'package:edu_vista/utils/app_widget_utils.dart';
 import 'package:edu_vista/utils/text_utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -79,43 +79,11 @@ class _CourseWidgetState extends State<CourseWidget> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    // Wrapping this Column inside an Expanded widget
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                course.rating.toStringAsFixed(1),
-                                style: TextUtils.ratingTextstyle,
-                              ),
-                              const SizedBox(width: 8),
-                              Row(
-                                children: List.generate(
-                                  5,
-                                  (starIndex) {
-                                    if (starIndex < course.rating.floor()) {
-                                      return const Icon(
-                                        Icons.star,
-                                        color: ColorUtility.primaryColor,
-                                      );
-                                    } else if (starIndex < course.rating) {
-                                      return const Icon(
-                                        Icons.star_half,
-                                        color: ColorUtility.primaryColor,
-                                      );
-                                    } else {
-                                      return const Icon(
-                                        Icons.star_border,
-                                        color: ColorUtility.primaryColor,
-                                      );
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
+                          buildRatingStars(course.rating, 16),
                           Text(
                             course.title,
                             style: TextUtils.titleTextStyle,
@@ -146,7 +114,8 @@ class _CourseWidgetState extends State<CourseWidget> {
                                 style: TextUtils.priceTextStyle,
                               ),
                               IconButton(
-                                onPressed: () => _addToCart(course),
+                                onPressed: () =>
+                                    _addToCart(course.id, instructorName),
                                 icon: const Icon(Icons.add_shopping_cart),
                                 tooltip: 'Add to Cart',
                               ),
@@ -229,7 +198,7 @@ class _CourseWidgetState extends State<CourseWidget> {
     }
   }
 
-  Future<void> _addToCart(Course course) async {
+  Future<void> _addToCart(String courseId, String instructorName) async {
     try {
       // Get the user ID (replace with actual logic to get the current user ID)
       final userId = FirebaseAuth.instance.currentUser?.uid;
@@ -239,19 +208,16 @@ class _CourseWidgetState extends State<CourseWidget> {
 
       // Create a CartItem instance
       final cartItem = CartItem(
-        id: DateTime.now().toString(), // Generate a unique ID for the cart item
-        courseId: course.id,
-        title: course.title,
-        price: course.price,
-        imageUrl: course.image,
-      );
+          id: DateTime.now().toString(),
+          courseId: courseId,
+          instructorName: instructorName);
 
       // Add the item to the user's cart in Firestore
       await FirebaseFirestore.instance
           .collection('carts')
           .doc(userId)
           .collection('items')
-          .doc(cartItem.id) // Use a predefined ID for the cart item
+          .doc(cartItem.id)
           .set(cartItem.toJson());
 
       ScaffoldMessenger.of(context).showSnackBar(

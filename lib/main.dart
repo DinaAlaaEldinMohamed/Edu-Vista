@@ -1,4 +1,5 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:edu_vista/blocs/cart/cart_bloc.dart';
 import 'package:edu_vista/blocs/course/course_bloc.dart';
 import 'package:edu_vista/blocs/lecture/lecture_bloc.dart';
 import 'package:edu_vista/cubit/auth_cubit.dart';
@@ -35,6 +36,7 @@ void main() async {
           BlocProvider(create: (ctx) => AuthCubit()),
           BlocProvider(create: (ctx) => CourseBloc()),
           BlocProvider(create: (ctx) => LectureBloc()),
+          BlocProvider(create: (ctx) => CartBloc()),
         ],
         child: const MyApp(),
       );

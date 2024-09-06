@@ -8,21 +8,21 @@ class AppElvatedBtn extends StatelessWidget {
   Widget? child;
   String? title;
   double? borderRadius;
-
   final Color textColor;
-  void Function() onPressed;
+  final void Function() onPressed;
+  final EdgeInsetsGeometry? padding; // Add this line
 
-  // final double width;
-  // final double height;
-  AppElvatedBtn(
-      {this.backgroundColor = ColorUtility.secondaryColor,
-      this.textColor = Colors.white,
-      this.horizontal,
-      this.child,
-      this.title,
-      required this.onPressed,
-      this.borderRadius,
-      super.key}) {
+  AppElvatedBtn({
+    this.backgroundColor = ColorUtility.secondaryColor,
+    this.textColor = Colors.white,
+    this.horizontal,
+    this.child,
+    this.title,
+    required this.onPressed,
+    this.borderRadius,
+    this.padding, // Add this line
+    super.key,
+  }) {
     assert(
         child != null || title != null, 'child Or Text must not equal to null');
   }
@@ -36,6 +36,8 @@ class AppElvatedBtn extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius ?? 8),
         ),
+        padding:
+            padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
       child: title != null
           ? Text(

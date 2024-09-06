@@ -17,7 +17,7 @@ class CartIconButton extends StatelessWidget {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => CartPage()),
+          MaterialPageRoute(builder: (context) => const CartScreen()),
         );
       },
     );

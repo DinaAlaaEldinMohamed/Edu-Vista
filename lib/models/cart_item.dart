@@ -1,39 +1,42 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:edu_vista/models/course.dart';
 
 class CartItem {
-  final String id; // Add this field
+  final String id;
   final String courseId;
-  final String title;
-  final double price;
-  final String imageUrl;
+  final String instructorName;
+  final Course? course; // Make course nullable
 
   CartItem({
-    required this.id, // Add this field to the constructor
+    required this.id,
     required this.courseId,
-    required this.title,
-    required this.price,
-    required this.imageUrl,
+    required this.instructorName,
+    this.course, // Initialize course in the constructor
   });
 
-  // Convert a CartItem instance to a JSON map
+  // Factory constructor for creating a CartItem from Firestore data
+  factory CartItem.fromFirestore(Map<String, dynamic> data) {
+    return CartItem(
+      id: data['id'] as String? ?? '',
+      courseId: data['courseId'] as String? ?? '',
+      instructorName: data['instructorName'] as String? ?? '',
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'courseId': courseId,
-      'title': title,
-      'price': price,
-      'imageUrl': imageUrl,
+      'instructorName': instructorName,
     };
   }
 
-  // Create a CartItem instance from a Firestore document snapshot
-  factory CartItem.fromFirestore(DocumentSnapshot<Map<String, dynamic>> doc) {
-    final data = doc.data()!;
+  // Copy constructor to create a new instance with updated course
+  CartItem copyWith({Course? course}) {
     return CartItem(
-      id: doc.id, // Use doc.id as the id
-      courseId: data['courseId'] as String,
-      title: data['title'] as String,
-      price: (data['price'] as num).toDouble(), // Ensure price is double
-      imageUrl: data['imageUrl'] as String,
+      id: id,
+      courseId: courseId,
+      instructorName: instructorName,
+      course: course ?? this.course,
     );
   }
 }

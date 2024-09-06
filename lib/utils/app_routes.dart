@@ -1,3 +1,4 @@
+import 'package:edu_vista/cart_page.dart';
 import 'package:edu_vista/home_page.dart';
 import 'package:edu_vista/screens/auth/forgot_password_screen.dart';
 import 'package:edu_vista/screens/auth/login_screen.dart';
@@ -49,6 +50,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const SearchScreen());
       case RankedCourseScreen.route:
         return MaterialPageRoute(builder: (_) => const RankedCourseScreen());
+      case CartScreen.route:
+        return MaterialPageRoute(builder: (_) => const CartScreen());
       case CourseDetailsScreen.route:
         if (arguments is Map<String, dynamic>) {
           return MaterialPageRoute(

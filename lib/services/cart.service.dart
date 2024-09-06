@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/models/cart_item.dart';
+import 'package:edu_vista/models/course.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class CartService {
@@ -13,10 +14,19 @@ class CartService {
         .collection('items')
         .get();
 
-    final cartItems =
-        snapshot.docs.map((doc) => CartItem.fromFirestore(doc)).toList();
-    print(
-        'Fetched cart items cart ftech item: ${cartItems.map((item) => item.id).toList()}'); // Logging
+    final cartItems = await Future.wait(snapshot.docs.map((doc) async {
+      final data = doc.data();
+      final cartItem = CartItem.fromFirestore(data);
+
+      // Fetch course data for each cart item
+      final courseDoc =
+          await _firestore.collection('courses').doc(cartItem.courseId).get();
+      final course = Course.fromFirestore(courseDoc);
+
+      return cartItem.copyWith(course: course);
+    }).toList());
+
+    print('Fetched cart items: ${cartItems.map((item) => item.id).toList()}');
     return cartItems;
   }
 
@@ -27,7 +37,6 @@ class CartService {
         .collection('items')
         .doc(item.id);
 
-    // Check if the item already exists in the cart
     final docSnapshot = await cartRef.get();
     if (!docSnapshot.exists) {
       await cartRef.set(item.toJson());
@@ -61,11 +70,9 @@ class CartService {
   }
 
   Future<void> updateCartAfterPurchase(String purchasedItemId) async {
-    // Remove the purchased item from the cart
     await removeCartItem(purchasedItemId);
 
-    // Fetch updated cart items to verify the item is removed
     final updatedCartItems = await getCartItems();
-    print('Updated Cart Items: $updatedCartItems'); // Debugging line
+    print('Updated Cart Items: $updatedCartItems');
   }
 }
