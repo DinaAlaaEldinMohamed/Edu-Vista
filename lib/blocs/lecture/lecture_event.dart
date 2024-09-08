@@ -11,3 +11,12 @@ class LectureChosenEvent extends LectureEvent {
 class LectureEventInitial extends LectureEvent {}
 
 class ResetLectureEvent extends LectureEvent {}
+
+class MarkLectureAsWatchedEvent extends LectureEvent {
+  final String lectureId;
+  final String userId;
+  final String courseId;
+
+  MarkLectureAsWatchedEvent(
+      {required this.lectureId, required this.userId, required this.courseId});
+}

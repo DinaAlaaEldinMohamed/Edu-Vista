@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/models/course.dart';
+import 'package:edu_vista/repositoy/course_repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -14,17 +15,19 @@ class CoursesListScreen extends StatefulWidget {
 class _CoursesScreenState extends State<CoursesListScreen> {
   @override
   Widget build(BuildContext context) {
-    return PurchasedCoursesList();
+    return const PurchasedCoursesList();
   }
 }
 
 class PurchasedCoursesList extends StatelessWidget {
-  const PurchasedCoursesList({Key? key}) : super(key: key);
+  const PurchasedCoursesList({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Course>>(
-      future: getUserPurchasedCourses(), // Function to get purchased courses
+    final CourseRepository courseRepository = CourseRepository();
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: courseRepository
+          .getUserCoursesWithProgress(), // Function to get user courses with progress
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -39,68 +42,36 @@ class PurchasedCoursesList extends StatelessWidget {
             child: Text('No purchased courses found.'),
           );
         } else {
-          List<Course> purchasedCourses = snapshot.data!;
+          List<Map<String, dynamic>> userCourses = snapshot.data!;
           return ListView.builder(
-            itemCount: purchasedCourses.length,
+            itemCount: userCourses.length,
             itemBuilder: (context, index) {
-              Course course = purchasedCourses[index];
+              final courseData = userCourses[index];
+              final course = courseData['course'] as Course;
+              final progress = courseData['progress'] as double?;
+              print('progress:=======================$progress');
+              final progressText = progress == null
+                  ? 'Start Now'
+                  : 'Progress: ${progress.toStringAsFixed(0)}%';
+
               return ListTile(
                 contentPadding: const EdgeInsets.all(16.0),
                 title: Text(course.title),
-                subtitle: Text('Instructor:  Instructor name'),
-                // ignore: unnecessary_null_comparison
-                leading: course.image != null
-                    ? Image.network(course
-                        .image) // Assuming imageUrl is a property of Course
-                    : null,
-                onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => CourseDetailPage(course: course), // CourseDetailPage should be implemented separately
-                  //   ),
-                  // );
-                },
+                subtitle: Text(progressText),
+                leading:
+                    course.image != null ? Image.network(course.image!) : null,
+                trailing: ElevatedButton(
+                  onPressed: () {
+                    if (progress == null) {
+                    } else {}
+                  },
+                  child: Text(progress == null ? 'Start Now' : 'Continue'),
+                ),
               );
             },
           );
         }
       },
     );
-  }
-
-  Future<List<String>> fetchPurchasedCourses() async {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      // Reference to the user's purchasedCourses subcollection
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .collection('purchasedCourses')
-          .get();
-
-      // Extract course IDs
-      List<String> purchasedCourseIds =
-          querySnapshot.docs.map((doc) => doc.id).toList();
-      return purchasedCourseIds;
-    }
-    return [];
-  }
-
-  Future<List<Course>> getUserPurchasedCourses() async {
-    List<String> purchasedCourseIds = await fetchPurchasedCourses();
-    List<Course> courses = [];
-
-    // Fetch course details for each purchased course
-    for (String courseId in purchasedCourseIds) {
-      DocumentSnapshot courseDoc = await FirebaseFirestore.instance
-          .collection('courses')
-          .doc(courseId)
-          .get();
-      courses.add(Course.fromFirestore(courseDoc));
-    }
-
-    return courses;
   }
 }

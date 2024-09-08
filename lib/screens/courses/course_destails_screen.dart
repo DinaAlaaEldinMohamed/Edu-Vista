@@ -1,5 +1,6 @@
 import 'package:edu_vista/repositoy/course_repo.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:edu_vista/blocs/course/course_bloc.dart';
@@ -29,6 +30,15 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
     context.read<LectureBloc>().add(LectureEventInitial());
   }
 
+  void _handleLectureWatched(String lectureId) {
+    final course = widget.courseData['course'] as Course;
+
+    context.read<LectureBloc>().add(MarkLectureAsWatchedEvent(
+        lectureId: lectureId,
+        userId: FirebaseAuth.instance.currentUser!.uid,
+        courseId: course.id));
+  }
+
   @override
   Widget build(BuildContext context) {
     final course = widget.courseData['course'] as Course;
@@ -54,7 +64,9 @@ class _CourseDetailsScreenState extends State<CourseDetailsScreen> {
                         ),
                       )
                     : VideoBoxWidget(
+                        lectureId: state.lecture.id ?? '',
                         url: state.lecture.lectureUrl ?? '',
+                        onLectureWatched: _handleLectureWatched,
                       ),
               );
             }
@@ -148,10 +160,10 @@ class _BodyWidget extends StatelessWidget {
                   onLectureChosen: (lecture) async {
                     // Reset LectureBloc state before selecting a new lecture
                     context.read<LectureBloc>().add(ResetLectureEvent());
-                    final CourseRepository courseRepository =
-                        CourseRepository();
-                    await courseRepository
-                        .updateOrCreateUserProgress(state.course.id);
+                    // final CourseRepository courseRepository =
+                    //     CourseRepository();
+                    // await courseRepository
+                    //     .updateOrCreateUserProgress(state.course.id);
                     context
                         .read<LectureBloc>()
                         .add(LectureChosenEvent(lecture));

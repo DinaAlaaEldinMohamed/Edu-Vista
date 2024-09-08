@@ -90,7 +90,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         if (response.success == true) {
           await _cartService.removeCartItem(event.cartItemId);
 
-          await _cartService.addCourseToPurchased(cartItem.id);
+          await _cartService.addCourseToPurchased(cartItem.courseId);
 
           final updatedCartItems = await _cartService.getCartItems();
           print(

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/models/course.dart';
 import 'package:edu_vista/models/lecture.dart';
@@ -5,6 +6,7 @@ import 'package:edu_vista/utils/app_enums.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:edu_vista/utils/functions.dart';
 import 'package:edu_vista/widgets/app/responsive_text.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CourseOptionsWidgets extends StatefulWidget {
@@ -44,7 +46,21 @@ class _CourseOptionsWidgetsState extends State<CourseOptionsWidgets> {
     }
   }
 
+  Future<String> _fetchLastSeenLectureId() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .collection('course_user_progress')
+        .doc(widget.course.id)
+        .get();
+    return userDoc.data()?['lastSeenLectureId'] ?? '';
+  }
+
   Future<void> _fetchLectures() async {
+    final lastSeenLectureId = await _fetchLastSeenLectureId();
+
     setState(() {
       _lecturesFuture = FirebaseFirestore.instance
           .collection('courses')
@@ -53,9 +69,29 @@ class _CourseOptionsWidgetsState extends State<CourseOptionsWidgets> {
           .orderBy('sort')
           .get()
           .then((result) {
-        return result.docs
+        final lectures = result.docs
             .map((e) => Lecture.fromJson({'id': e.id, ...e.data()}))
             .toList();
+
+        final defaultLecture = Lecture.fromJson({
+          'id': '',
+          'title': '',
+          'description': '',
+          'duration': 0,
+          'sort': 0,
+          'watched_users': [],
+        });
+
+        final lastSeenLecture = lectures.firstWhere(
+          (lecture) => lecture.id == lastSeenLectureId,
+          orElse: () => lectures.isNotEmpty ? lectures.first : defaultLecture,
+        );
+
+        setState(() {
+          selectedLecture = lastSeenLecture;
+        });
+
+        return lectures;
       });
     });
   }

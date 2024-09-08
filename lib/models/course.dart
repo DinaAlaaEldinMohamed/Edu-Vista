@@ -32,18 +32,24 @@ class Course {
   });
 
   factory Course.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+    final data = doc.data() as Map<String, dynamic>?; // Safely casting to Map
+
+    if (data == null) {
+      throw Exception('Document does not exist or data is null');
+    }
 
     return Course(
       id: doc.id,
-      title: data['title'] as String,
-      image: data['image'] as String,
+      title: data['title'] as String? ??
+          'Unknown Title', // Providing fallback values
+      image: data['image'] as String? ??
+          '', // Provide default image or handle null case
       category: data['category'] is DocumentReference
           ? data['category'] as DocumentReference
-          : FirebaseFirestore.instance.doc(data['category'] as String),
+          : FirebaseFirestore.instance.doc(data['category'] as String? ?? ''),
       instructor: data['instructor'] is DocumentReference
           ? data['instructor'] as DocumentReference
-          : FirebaseFirestore.instance.doc(data['instructor'] as String),
+          : FirebaseFirestore.instance.doc(data['instructor'] as String? ?? ''),
       duration: data['duration'] is int
           ? (data['duration'] as int).toDouble()
           : (data['duration'] as double? ?? 0.0),
@@ -53,11 +59,11 @@ class Course {
       price: data['price'] is int
           ? (data['price'] as int).toDouble()
           : (data['price'] as double? ?? 0.0),
-      createdAt: data['created_at'] as Timestamp,
-      hasCertificate: data['has_certificate'] as bool,
-      currency: data['currency'] as String,
+      createdAt: data['created_at'] as Timestamp? ?? Timestamp.now(),
+      hasCertificate: data['has_certificate'] as bool? ?? false,
+      currency: data['currency'] as String? ?? 'USD',
       ranks: List<String>.from(data['ranks'] ?? []),
-      enrollments: data['enrollments'] as int,
+      enrollments: data['enrollments'] as int? ?? 0,
     );
   }
 

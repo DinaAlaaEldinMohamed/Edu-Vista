@@ -5,7 +5,6 @@ class Lecture {
   int? duration;
   String? lectureUrl;
   int? sort;
-  List<String>? watchedUsers;
 
   Lecture.fromJson(Map<String, dynamic> data) {
     id = data['id'];
@@ -14,8 +13,6 @@ class Lecture {
     duration = data['duration'];
     lectureUrl = data['lecture_url'];
     sort = data['sort'];
-    watchedUsers =
-        data['watched_users'] != null ? List.from(data['watched_users']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -26,7 +23,7 @@ class Lecture {
     data['duration'] = duration;
     data['lecture_url'] = lectureUrl;
     data['sort'] = sort;
-    data['watched_users'] = watchedUsers;
+
     return data;
   }
 }
