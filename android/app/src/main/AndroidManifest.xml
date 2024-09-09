@@ -10,6 +10,16 @@
         android:label="edu_vista"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+           <!-- Add the FileProvider configuration here -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.flutter_downloader.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider>
         <activity
             
             android:name=".MainActivity"
@@ -37,6 +47,7 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+            
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility?hl=en and

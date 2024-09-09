@@ -1,68 +1,123 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:edu_vista/models/cart_item.dart';
 import 'package:edu_vista/models/course.dart';
-import 'package:edu_vista/screens/courses/courses_list_screen.dart';
+import 'package:edu_vista/services/ranking.service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class CourseRepository {
   final userId = FirebaseAuth.instance.currentUser!.uid;
-  // Update or create user progress
-  Future<void> updateOrCreateUserProgress(String courseId) async {
-    final progressRef = FirebaseFirestore.instance
-        .collection('course_user_progress')
-        .doc(userId);
 
+//------------------------------- Fetch Courses And Instructor ---------------------------------------------------
+
+  Future<List<Map<String, dynamic>>> fetchCourseAndInstructor(
+      String rank) async {
     try {
-      final docSnapshot = await progressRef.get();
-      if (docSnapshot.exists) {
-        // Document exists, update it
-        await progressRef.update({
-          courseId: FieldValue.increment(1),
-        });
-      } else {
-        // Document does not exist, create it
-        await progressRef.set({
-          courseId: 1,
-        });
+      final availableRankings = await RankingService().getAvailableRankings();
+
+      // Check if the current rank is valid
+      if (!availableRankings.contains(rank)) {
+        return [];
       }
-    } catch (e) {
-      print('Error updating or creating user progress: $e');
-    }
-  }
-
-  Future<List<Course>> getUserPurchasedCourses() async {
-    List<String> purchasedCourseIds = await fetchPurchasedCourses();
-    List<Course> courses = [];
-
-    // Fetch course details for each purchased course
-    for (String courseId in purchasedCourseIds) {
-      DocumentSnapshot courseDoc = await FirebaseFirestore.instance
+      final courseQuerySnapshot = await FirebaseFirestore.instance
           .collection('courses')
-          .doc(courseId)
+          .where('ranks', arrayContains: rank)
+          .orderBy('created_at', descending: true)
           .get();
-      courses.add(Course.fromFirestore(courseDoc));
-    }
+      if (courseQuerySnapshot.docs.isEmpty) {
+        return []; // Return an empty list if no courses are found
+      }
 
-    return courses;
+      final instructorFutures =
+          <Future<DocumentSnapshot<Map<String, dynamic>>>>[];
+      final courses = courseQuerySnapshot.docs.map((doc) {
+        final course = Course.fromFirestore(doc);
+        print('Course found: ${course.title}');
+        instructorFutures.add(course.instructor
+            .withConverter<Map<String, dynamic>>(
+              fromFirestore: (snapshot, _) => snapshot.data()!,
+              toFirestore: (instructor, _) => {},
+            )
+            .get());
+        return course;
+      }).toList();
+      //fetch instructor data
+      final instructorSnapshots = await Future.wait(instructorFutures);
+      final instructors = instructorSnapshots.map((snapshot) {
+        final data = snapshot.data();
+        return data?['name'] ?? 'Unknown';
+      }).toList();
+
+      final courseAndInstructor = List.generate(courses.length, (index) {
+        return {
+          'course': courses[index],
+          'instructorName': instructors[index],
+        };
+      });
+
+      return courseAndInstructor;
+    } catch (e) {
+      return [];
+    }
   }
 
-  Future<List<String>> fetchPurchasedCourses() async {
-    User? user = FirebaseAuth.instance.currentUser;
+//------------------------------- Add course to cart --------------------------------------------------------------
 
-    if (user != null) {
-      // Reference to the user's purchasedCourses subcollection
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid)
-          .collection('purchasedCourses')
+  Future<void> addToCart(
+      String courseId, String instructorName, BuildContext context) async {
+    try {
+      if (userId == null) {
+        throw Exception('User not logged in');
+      }
+
+      // Check if the item is already in the cart
+      final cartItemsSnapshot = await FirebaseFirestore.instance
+          .collection('carts')
+          .doc(userId)
+          .collection('items')
+          .where('courseId', isEqualTo: courseId)
+          .limit(1)
           .get();
 
-      // Extract course IDs
-      List<String> purchasedCourseIds =
-          querySnapshot.docs.map((doc) => doc.id).toList();
-      return purchasedCourseIds;
+      if (cartItemsSnapshot.docs.isNotEmpty) {
+        // Item already exists in the cart
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('This item is already in your cart'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        return;
+      }
+
+      // Create a CartItem instance
+      final cartItem = CartItem(
+          id: DateTime.now().toString(),
+          courseId: courseId,
+          instructorName: instructorName);
+
+      // Add the item to the user's cart in Firestore
+      await FirebaseFirestore.instance
+          .collection('carts')
+          .doc(userId)
+          .collection('items')
+          .doc(cartItem.id)
+          .set(cartItem.toJson());
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Added to cart'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      print('Error adding item to cart: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to add to cart')),
+      );
     }
-    return [];
   }
+//------------------------------- Get User Courses With his progress-----------------------------------------------
 
   Future<List<Map<String, dynamic>>> getUserCoursesWithProgress() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -103,11 +158,22 @@ class CourseRepository {
 
         double? progress = progressData?['progress']?.toDouble();
 
-        print('Progress for course ID: $courseId: $progress'); // Debugging line
+        print('Progress for course ID: $courseId: $progress');
 
+        print('Fetching instructor details...');
+        // Fetch instructor details
+        String instructorName = '';
+        if (course.instructor != null) {
+          DocumentSnapshot instructorDoc = await course.instructor.get();
+          if (instructorDoc.exists) {
+            instructorName =
+                instructorDoc['name'] as String? ?? 'Unknown Instructor';
+          }
+        }
         userCourses.add({
           'course': course,
           'progress': progress,
+          'instructorName': instructorName
         });
       }
 

@@ -14,7 +14,6 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   late TextEditingController emailController;
-  bool _isLoading = false;
 
   @override
   void initState() {
@@ -32,9 +31,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     return AuthTemplateWidget(
       onResetPassword: (email) async {
-        setState(() {
-          _isLoading = true;
-        });
+        setState(() {});
         try {
           await context.read<AuthCubit>().forgotPassword(
                 context: context,
@@ -45,9 +42,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         } catch (e) {
           print('error: $e');
         } finally {
-          setState(() {
-            _isLoading = false;
-          });
+          setState(() {});
         }
       },
       body: SafeArea(

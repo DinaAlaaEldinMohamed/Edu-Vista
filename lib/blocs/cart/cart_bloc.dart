@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/models/cart_item.dart';
 import 'package:edu_vista/services/cart.service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -88,22 +89,69 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
       if (response != null) {
         if (response.success == true) {
-          await _cartService.removeCartItem(event.cartItemId);
+          // Check if the course is already in the user's purchased courses collection
+          final purchasedCoursesRef = FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .collection('purchasedCourses')
+              .doc(cartItem.courseId);
 
-          await _cartService.addCourseToPurchased(cartItem.courseId);
+          final purchasedCourseSnapshot = await purchasedCoursesRef.get();
 
-          final updatedCartItems = await _cartService.getCartItems();
-          print(
-              'Updated cart items after checkout: ${updatedCartItems.map((item) => item.id).toList()}');
+          if (!purchasedCourseSnapshot.exists) {
+            final courseRef = FirebaseFirestore.instance
+                .collection('courses')
+                .doc(cartItem.courseId);
 
-          emit(CartLoadSuccess(updatedCartItems));
+            await FirebaseFirestore.instance
+                .runTransaction((transaction) async {
+              DocumentSnapshot courseSnapshot =
+                  await transaction.get(courseRef);
 
-          ScaffoldMessenger.of(event.context).showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.green,
-              content: Text(response.message ?? "Payment Done Successfully"),
-            ),
-          );
+              if (courseSnapshot.exists) {
+                transaction.update(courseRef, {
+                  'enrollments': FieldValue.increment(1),
+                });
+              }
+            });
+
+            // Add the course to the user's purchased courses
+            await purchasedCoursesRef.set({
+              'courseId': cartItem.courseId,
+              'purchasedAt': FieldValue.serverTimestamp(),
+            });
+
+            // Remove the item from the cart
+            await _cartService.removeCartItem(event.cartItemId);
+
+            // Fetch updated cart items
+            final updatedCartItems = await _cartService.getCartItems();
+            print(
+                'Updated cart items after checkout: ${updatedCartItems.map((item) => item.id).toList()}');
+
+            emit(CartLoadSuccess(updatedCartItems));
+
+            // Show success message
+            ScaffoldMessenger.of(event.context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.green,
+                content: Text(response.message ?? "Payment Done Successfully"),
+              ),
+            );
+          } else {
+            // User already enrolled in the course, just remove the item from the cart
+            await _cartService.removeCartItem(event.cartItemId);
+
+            // Fetch updated cart items
+            final updatedCartItems = await _cartService.getCartItems();
+            emit(CartLoadSuccess(updatedCartItems));
+            ScaffoldMessenger.of(event.context).showSnackBar(
+              const SnackBar(
+                backgroundColor: Colors.blue,
+                content: Text("You have already purchased this course."),
+              ),
+            );
+          }
         } else {
           emit(CartLoadFailure(
               'Payment failed: ${response.message ?? 'Unknown error'}'));
@@ -111,7 +159,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
     } catch (e) {
       emit(CartLoadFailure('Failed to checkout: $e'));
-      print('checkout failed ============================$e');
     }
   }
 }

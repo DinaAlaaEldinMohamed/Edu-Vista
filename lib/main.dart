@@ -1,6 +1,7 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:edu_vista/blocs/cart/cart_bloc.dart';
 import 'package:edu_vista/blocs/course/course_bloc.dart';
+import 'package:edu_vista/blocs/course_options/course_options_bloc.dart';
 import 'package:edu_vista/blocs/lecture/lecture_bloc.dart';
 import 'package:edu_vista/cubit/auth_cubit.dart';
 import 'package:edu_vista/firebase_options.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
@@ -24,6 +26,7 @@ void main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    await FlutterDownloader.initialize();
   } catch (e) {
     print('Failed to initialize services: $e');
   }
@@ -37,6 +40,7 @@ void main() async {
           BlocProvider(create: (ctx) => CourseBloc()),
           BlocProvider(create: (ctx) => LectureBloc()),
           BlocProvider(create: (ctx) => CartBloc()),
+          BlocProvider(create: (ctx) => CourseOptionsBloc()),
         ],
         child: const MyApp(),
       );

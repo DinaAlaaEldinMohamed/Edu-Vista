@@ -1,4 +1,3 @@
-import 'package:edu_vista/repositoy/course_repo.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

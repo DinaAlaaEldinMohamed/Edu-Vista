@@ -15,13 +15,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final Map<String, String> rankTitles = {
-    'Students Also Search for': 'students_search',
-    'Top Courses in IT': 'top_courses_it',
-    'Top Sellers': 'top_sellers',
-    'Because you Viewed': 'viewed',
-    'Top Rated': 'top rated',
-  };
+  final List<String> rankTitles = [
+    'Students Also Search for',
+    'Top Courses in IT',
+    'Top Sellers',
+    'Because you Viewed',
+    'Top Rated',
+  ];
 
   @override
   void initState() {
@@ -55,9 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: rankTitles.keys.length,
+                itemCount: rankTitles.length,
                 itemBuilder: (context, index) {
-                  final rankTitle = rankTitles.keys.elementAt(index);
+                  final rankTitle = rankTitles[index];
                   return Padding(
                     padding: EdgeInsets.only(top: index == 0 ? 0 : 10.h),
                     child: Column(
