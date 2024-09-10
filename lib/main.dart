@@ -9,6 +9,7 @@ import 'package:edu_vista/screens/splash_screen.dart';
 import 'package:edu_vista/services/pref.service.dart';
 import 'package:edu_vista/utils/app_routes.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
+import 'package:edu_vista/utils/theme_notifier.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -58,19 +59,17 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Edu Vista',
-          theme: ThemeData(
-            fontFamily: "PlusJakartaSans",
-            colorScheme:
-                ColorScheme.fromSeed(seedColor: ColorUtility.primaryColor),
-            scaffoldBackgroundColor: ColorUtility.pageBackgroundColor,
-            useMaterial3: true,
-          ),
-          onGenerateRoute: AppRouter.generateRoute,
-          initialRoute: SplashScreen.route,
-        );
+        return ValueListenableBuilder<ThemeData>(
+            valueListenable: themeNotifier,
+            builder: (context, theme, child) {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'Edu Vista',
+                theme: theme,
+                onGenerateRoute: AppRouter.generateRoute,
+                initialRoute: SplashScreen.route,
+              );
+            });
       },
     );
   }

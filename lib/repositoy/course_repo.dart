@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/models/cart_item.dart';
 import 'package:edu_vista/models/course.dart';
+import 'package:edu_vista/models/instructors.dart';
 import 'package:edu_vista/services/ranking.service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,39 +20,34 @@ class CourseRepository {
       if (!availableRankings.contains(rank)) {
         return [];
       }
+
+      // Fetch courses
       final courseQuerySnapshot = await FirebaseFirestore.instance
           .collection('courses')
           .where('ranks', arrayContains: rank)
           .orderBy('created_at', descending: true)
           .get();
+
       if (courseQuerySnapshot.docs.isEmpty) {
-        return []; // Return an empty list if no courses are found
+        return [];
       }
 
+      // Convert Firestore docs to Course model
+      final courses = courseQuerySnapshot.docs
+          .map((doc) => Course.fromFirestore(doc))
+          .toList();
+
       final instructorFutures =
-          <Future<DocumentSnapshot<Map<String, dynamic>>>>[];
-      final courses = courseQuerySnapshot.docs.map((doc) {
-        final course = Course.fromFirestore(doc);
-        print('Course found: ${course.title}');
-        instructorFutures.add(course.instructor
-            .withConverter<Map<String, dynamic>>(
-              fromFirestore: (snapshot, _) => snapshot.data()!,
-              toFirestore: (instructor, _) => {},
-            )
-            .get());
-        return course;
-      }).toList();
-      //fetch instructor data
-      final instructorSnapshots = await Future.wait(instructorFutures);
-      final instructors = instructorSnapshots.map((snapshot) {
-        final data = snapshot.data();
-        return data?['name'] ?? 'Unknown';
-      }).toList();
+          courses.map((course) => fetchInstructorData(course)).toList();
+
+      final instructors = await Future.wait(instructorFutures);
 
       final courseAndInstructor = List.generate(courses.length, (index) {
+        final instructorData = instructors[index];
+        final instructorName = instructorData?.name ?? 'Unknown';
         return {
           'course': courses[index],
-          'instructorName': instructors[index],
+          'instructorName': instructorName,
         };
       });
 
@@ -180,5 +176,46 @@ class CourseRepository {
       return userCourses;
     }
     return [];
+  }
+
+//----------------------------------Fetch Course Instructor information --------------------------------------------
+
+  Future<Instructor?> fetchInstructorData(Course course) async {
+    try {
+      final instructorSnapshot = await course.instructor
+          .withConverter<Map<String, dynamic>>(
+            fromFirestore: (snapshot, _) => snapshot.data()!,
+            toFirestore: (instructor, _) => {},
+          )
+          .get();
+      if (instructorSnapshot.exists) {
+        return Instructor.fromFirestore(instructorSnapshot);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
+    }
+  }
+
+//-------------------------------------Fetch Course Resources ------------------------------------------------------
+  Future<List<Map<String, dynamic>>> fetchCourseResources(
+      String courseId) async {
+    try {
+      final resourcesQuerySnapshot = await FirebaseFirestore.instance
+          .collection('courses')
+          .doc(courseId)
+          .collection('resources')
+          .get();
+
+      final resources = resourcesQuerySnapshot.docs.map((doc) {
+        return doc.data() as Map<String, dynamic>;
+      }).toList();
+
+      return resources;
+    } catch (e) {
+      print('Error fetching resources: $e');
+      return [];
+    }
   }
 }

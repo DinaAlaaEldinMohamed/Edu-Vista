@@ -5,6 +5,7 @@ import 'package:edu_vista/screens/auth/login_screen.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:edu_vista/utils/images_utils.dart';
 import 'package:edu_vista/utils/text_utility.dart';
+import 'package:edu_vista/utils/theme_notifier.dart';
 import 'package:edu_vista/widgets/app/appButtons/app_elvated_btn.dart';
 import 'package:edu_vista/widgets/app/app_text_form_field.widget.dart';
 import 'package:edu_vista/widgets/app/custom_expansion_tile.widget.dart';
@@ -241,12 +242,87 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 )
                               ]),
                         ),
-                        const CustomExpansionTile(
-                            title: 'Setting', children: []),
-                        const CustomExpansionTile(
-                            title: 'Achievements', children: []),
-                        const CustomExpansionTile(
-                            title: 'About Us', children: []),
+                        CustomExpansionTile(title: 'Setting', children: [
+                          ListTile(
+                            leading: const Icon(Icons.dark_mode),
+                            title: const Text('Dark Mode'),
+                            trailing: Switch(
+                              value: themeNotifier.value.brightness ==
+                                  Brightness.dark,
+                              onChanged: (bool value) {
+                                themeNotifier.toggleTheme();
+                              },
+                            ),
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.language),
+                            title: const Text('Language'),
+                            trailing: DropdownButton<String>(
+                              value: 'English',
+                              items: <String>[
+                                'English',
+                                'Arabic',
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {},
+                            ),
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.notifications),
+                            title: const Text('Notifications'),
+                            trailing: Switch(
+                              value:
+                                  true, // Replace with actual notification setting value
+                              onChanged: (bool value) {
+                                // Handle notifications toggle
+                              },
+                            ),
+                          ),
+                        ]),
+                        // const CustomExpansionTile(
+                        //     title: 'Achievements', children: []),
+                        CustomExpansionTile(title: 'About Us', children: [
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Version 1.0',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                                const SizedBox(height: 8.0),
+                                const Text(
+                                  'This app provides a comprehensive learning experience. We are committed to delivering quality content and continuous updates.',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 8.0),
+                                TextButton(
+                                  onPressed: () {},
+                                  child: const Text('Contact Us'),
+                                ),
+                                TextButton(
+                                  onPressed: () {},
+                                  child: const Text('Privacy Policy'),
+                                ),
+                                TextButton(
+                                  onPressed: () {},
+                                  child: const Text('Terms of Service'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ]),
                       ],
                     ),
                     Row(

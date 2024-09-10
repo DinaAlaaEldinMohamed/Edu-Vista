@@ -14,6 +14,7 @@ class Course {
   String currency;
   List<String> ranks;
   int enrollments;
+  String certificate;
 
   Course({
     required this.id,
@@ -29,6 +30,7 @@ class Course {
     required this.currency,
     required this.ranks,
     required this.enrollments,
+    required this.certificate,
   });
 
   factory Course.fromFirestore(DocumentSnapshot doc) {
@@ -64,6 +66,7 @@ class Course {
       currency: data['currency'] as String? ?? 'USD',
       ranks: List<String>.from(data['ranks'] ?? []),
       enrollments: data['enrollments'] as int? ?? 0,
+      certificate: data['certificate'] as String? ?? '',
     );
   }
 
@@ -81,6 +84,7 @@ class Course {
       'currency': currency,
       'ranks': ranks,
       'enrollments': enrollments,
+      'certificate': certificate,
     };
   }
 }
