@@ -465,7 +465,7 @@ class _CourseOptionsWidgetsState extends State<CourseOptionsWidgets> {
       },
     );
   }
-//---------------------------------------Build More Option Body---------------------------------------------------
+//---------------------------------------Build More Option Body-------------------------------------------------------
 
   Widget _buildMoreOptionBody() {
     return SingleChildScrollView(
@@ -633,12 +633,12 @@ class _CourseOptionsWidgetsState extends State<CourseOptionsWidgets> {
     );
   }
 
-  // Method to open a resource
+//---------------------------------------Open course resources---------------------------------------------------------
   void _openResource(String url) {
     launchUrl(Uri.parse(url));
   }
 
-// Method to share the course
+//---------------------------------------Share Cource ----------------------------------------------------------------
   void _shareCourse(String platform) async {
     final result = await Share.share('Check out this amazing course!');
 
@@ -647,6 +647,7 @@ class _CourseOptionsWidgetsState extends State<CourseOptionsWidgets> {
     }
   }
 
+//---------------------------------------Show certificate image   ---------------------------------------------------------
   void _showImageDialog(String imageUrl) {
     showModalBottomSheet(
       backgroundColor: Colors.transparent,

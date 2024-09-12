@@ -178,6 +178,51 @@ class CourseRepository {
     return [];
   }
 
+//-----------------------------------Fetch Course By Category -------------------------------------------------------
+  Future<List<Map<String, dynamic>>> fetchCoursesByCategory(
+      String categoryId) async {
+    try {
+      // Fetch courses by category
+      final courseQuerySnapshot = await FirebaseFirestore.instance
+          .collection('courses')
+          .where('category',
+              isEqualTo:
+                  FirebaseFirestore.instance.doc('categories/$categoryId'))
+          .get();
+
+      if (courseQuerySnapshot.docs.isEmpty) {
+        return [];
+      }
+
+      // Convert Firestore docs to Course objects
+      final courses = courseQuerySnapshot.docs
+          .map((doc) => Course.fromFirestore(doc))
+          .toList();
+
+      // Fetch instructor data for each course
+      final instructorFutures =
+          courses.map((course) => fetchInstructorData(course)).toList();
+      final instructors = await Future.wait(instructorFutures);
+
+      // Combine course and instructor data into a map
+      final courseAndInstructorData = List.generate(courses.length, (index) {
+        final course = courses[index];
+        final instructor = instructors[index];
+        final instructorName = instructor?.name ?? 'Unknown';
+
+        return {
+          'course': course,
+          'instructorName': instructorName,
+        };
+      });
+
+      return courseAndInstructorData;
+    } catch (e) {
+      print('Error fetching courses and instructor data: $e');
+      return [];
+    }
+  }
+
 //----------------------------------Fetch Course Instructor information --------------------------------------------
 
   Future<Instructor?> fetchInstructorData(Course course) async {

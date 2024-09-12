@@ -1,4 +1,4 @@
-import 'package:edu_vista/cart_page.dart';
+import 'package:edu_vista/screens/cart/cart_screen.dart';
 import 'package:edu_vista/home_page.dart';
 import 'package:edu_vista/screens/auth/forgot_password_screen.dart';
 import 'package:edu_vista/screens/auth/login_screen.dart';
@@ -9,7 +9,7 @@ import 'package:edu_vista/screens/courses/course_destails_screen.dart';
 import 'package:edu_vista/screens/courses/courses_list_screen.dart';
 import 'package:edu_vista/screens/courses/ranked_course_screen.dart';
 import 'package:edu_vista/screens/home/chat_screen.dart';
-import 'package:edu_vista/screens/home/search_screen.dart';
+import 'package:edu_vista/screens/search/search_screen.dart';
 import 'package:edu_vista/screens/onBoarding/onboarding_screen.dart';
 import 'package:edu_vista/screens/profile/profile_screen.dart';
 import 'package:edu_vista/screens/splash_screen.dart';

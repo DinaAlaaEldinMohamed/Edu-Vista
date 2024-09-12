@@ -1,4 +1,4 @@
-import 'package:edu_vista/cart_page.dart';
+import 'package:edu_vista/screens/cart/cart_screen.dart';
 import 'package:edu_vista/utils/images_utils.dart';
 import 'package:flutter/material.dart';
 

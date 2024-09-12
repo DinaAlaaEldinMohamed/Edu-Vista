@@ -3,12 +3,12 @@ import 'package:edu_vista/blocs/cart/cart_bloc.dart';
 import 'package:edu_vista/blocs/course/course_bloc.dart';
 import 'package:edu_vista/blocs/course_options/course_options_bloc.dart';
 import 'package:edu_vista/blocs/lecture/lecture_bloc.dart';
+import 'package:edu_vista/blocs/search/search_bloc.dart';
 import 'package:edu_vista/cubit/auth_cubit.dart';
 import 'package:edu_vista/firebase_options.dart';
 import 'package:edu_vista/screens/splash_screen.dart';
 import 'package:edu_vista/services/pref.service.dart';
 import 'package:edu_vista/utils/app_routes.dart';
-import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:edu_vista/utils/theme_notifier.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -42,6 +42,7 @@ void main() async {
           BlocProvider(create: (ctx) => LectureBloc()),
           BlocProvider(create: (ctx) => CartBloc()),
           BlocProvider(create: (ctx) => CourseOptionsBloc()),
+          BlocProvider(create: (ctx) => SearchBloc()),
         ],
         child: const MyApp(),
       );

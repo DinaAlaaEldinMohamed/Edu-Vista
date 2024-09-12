@@ -1,5 +1,5 @@
 import 'package:edu_vista/models/cart_item.dart';
-import 'package:edu_vista/screens/payment/payment_screen.dart';
+import 'package:edu_vista/screens/cart/payment_screen.dart';
 import 'package:edu_vista/utils/app_widget_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:edu_vista/widgets/app/appButtons/app_elvated_btn.dart';
@@ -12,13 +12,14 @@ class CartItemTile extends StatefulWidget {
   final Function() onBuy;
 
   const CartItemTile({
+    super.key,
     required this.item,
     required this.onCancel,
     required this.onBuy,
   });
 
   @override
-  _CartItemTileState createState() => _CartItemTileState();
+  State<CartItemTile> createState() => _CartItemTileState();
 }
 
 class _CartItemTileState extends State<CartItemTile> {
