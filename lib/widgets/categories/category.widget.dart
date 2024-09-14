@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/models/category.dart';
+import 'package:edu_vista/screens/categories/category_courses_screen.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:edu_vista/utils/text_utility.dart';
 import 'package:flutter/material.dart';
@@ -39,17 +40,29 @@ class _CategoryWidgetState extends State<CategoryWidget> {
               return ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: categories.length,
-                itemBuilder: (context, index) => Container(
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                        color: ColorUtility.lightGreyColor,
-                        borderRadius: BorderRadius.circular(42)),
-                    child: Center(
-                      child: Text(
-                        categories[index].name ?? 'No Name',
-                        style: TextUtils.subheadline,
+                itemBuilder: (context, index) => GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CategoryCoursesScreen(
+                          category: categories[index],
+                        ),
                       ),
-                    )),
+                    );
+                  },
+                  child: Container(
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          color: ColorUtility.lightGreyColor,
+                          borderRadius: BorderRadius.circular(42)),
+                      child: Center(
+                        child: Text(
+                          categories[index].name ?? 'No Name',
+                          style: TextUtils.subheadline,
+                        ),
+                      )),
+                ),
                 separatorBuilder: (context, index) => const SizedBox(
                   width: 10,
                 ),

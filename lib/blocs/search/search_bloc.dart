@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/models/course.dart';
 import 'package:edu_vista/models/category.dart'; // Ensure you have a Category model
 import 'package:edu_vista/repositoy/course_repo.dart';
+import 'package:edu_vista/services/ranking.service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,6 +13,7 @@ part 'search_state.dart';
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc() : super(SearchInitial()) {
     on<SearchQuerySubmitted>(_handleSearchQuerySubmitted);
+    on<SearchQueryChanged>(_handleSearchQueryChanged);
     on<FetchTrendingTags>(_fetchTrendingTags);
     on<FetchUserSearchTags>(_fetchUserSearchTags);
   }
@@ -20,6 +22,18 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       SearchQuerySubmitted event, Emitter<SearchState> emit) async {
     final query = event.query;
 
+    if (query.isEmpty) {
+      await _fetchDefaultContent(emit);
+    } else {
+      await _performSearch(query, emit);
+    }
+  }
+
+  Future<void> _handleSearchQueryChanged(
+      SearchQueryChanged event, Emitter<SearchState> emit) async {
+    final query = event.query;
+
+    // Fetch trending or recent tags if the query is empty
     if (query.isEmpty) {
       await _fetchDefaultContent(emit);
     } else {
@@ -54,6 +68,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<void> _performSearch(String query, Emitter<SearchState> emit) async {
     emit(SearchInProgress());
+    print(
+        'performSearch=============================================================================$query');
 
     try {
       final user = FirebaseAuth.instance.currentUser;
@@ -83,6 +99,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             'terms': FieldValue.arrayUnion([firstCourseTitle])
           }, SetOptions(merge: true));
         }
+
+        await RankingService()
+            .updateStudentAlsoSearchRank(searchResults.first.id);
 
         final trendingTagRef = FirebaseFirestore.instance
             .collection('trending_tags')
@@ -226,7 +245,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       if (currentState is TagsLoaded) {
         emit(TagsLoaded(currentState.trendingTags, userTags.take(5).toList()));
       } else {
-        emit(TagsLoaded([], userTags));
+        emit(TagsLoaded([], userTags.take(5).toList()));
       }
     } catch (e) {
       emit(SearchFailure('Failed to fetch user search tags: $e'));

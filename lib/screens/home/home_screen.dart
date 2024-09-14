@@ -16,7 +16,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final List<String> rankTitles = [
-    'Students Also Search for',
+    'Students Also Search For',
     'Top Courses in IT',
     'Top Sellers',
     'Because you Viewed',
@@ -46,10 +46,11 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const LabelTextwidget(
+              LabelTextwidget(
                 label: 'Categories',
                 linkText: 'See All',
-                route: CategoriesScreen.route,
+                onPressed: () => Navigator.pushReplacementNamed(
+                    context, CategoriesScreen.route),
               ),
               const CategoryWidget(),
               ListView.builder(
@@ -66,7 +67,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         LabelTextwidget(
                           label: rankTitle,
                           linkText: 'See All',
-                          route: RankedCourseScreen.route,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    RankedCourseScreen(rank: rankTitle),
+                              ),
+                            );
+                          },
                         ),
                         CourseWidget(rank: rankTitle),
                       ],

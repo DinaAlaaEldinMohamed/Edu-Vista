@@ -8,8 +8,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CourseWidget extends StatefulWidget {
   final String rank;
+  final String categoryId;
 
-  const CourseWidget({required this.rank, super.key});
+  const CourseWidget({this.rank = '', this.categoryId = '', super.key});
 
   @override
   State<CourseWidget> createState() => _CourseWidgetState();
@@ -22,7 +23,13 @@ class _CourseWidgetState extends State<CourseWidget> {
   @override
   void initState() {
     super.initState();
-    combinedFuture = courseRepository.fetchCourseAndInstructor(widget.rank);
+    if (widget.rank != '') {
+      combinedFuture = courseRepository.fetchCourseAndInstructor(widget.rank);
+    }
+    if (widget.categoryId != '') {
+      combinedFuture =
+          courseRepository.fetchCoursesByCategory(widget.categoryId);
+    }
   }
 
   @override

@@ -48,8 +48,6 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const ChatScreen());
       case SearchScreen.route:
         return MaterialPageRoute(builder: (_) => const SearchScreen());
-      case RankedCourseScreen.route:
-        return MaterialPageRoute(builder: (_) => const RankedCourseScreen());
       case CartScreen.route:
         return MaterialPageRoute(builder: (_) => const CartScreen());
       case CourseDetailsScreen.route:

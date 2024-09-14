@@ -1,9 +1,11 @@
-import 'package:edu_vista/repositoy/course_repo.dart';
-import 'package:edu_vista/screens/courses/course_destails_screen.dart';
+import 'package:edu_vista/home_page.dart';
+import 'package:edu_vista/utils/colors_utils.dart';
+import 'package:edu_vista/utils/text_utility.dart';
+import 'package:edu_vista/widgets/app/cart_icon_btn.widget.dart';
+import 'package:edu_vista/widgets/courses/course.widget.dart';
 import 'package:flutter/material.dart';
 
 import 'package:edu_vista/models/category.dart';
-import 'package:edu_vista/models/course.dart';
 
 class CategoryCoursesScreen extends StatefulWidget {
   final Category category;
@@ -11,62 +13,37 @@ class CategoryCoursesScreen extends StatefulWidget {
   const CategoryCoursesScreen({super.key, required this.category});
 
   @override
-  _CategoryCoursesScreenState createState() => _CategoryCoursesScreenState();
+  State<CategoryCoursesScreen> createState() => _CategoryCoursesScreenState();
 }
 
 class _CategoryCoursesScreenState extends State<CategoryCoursesScreen> {
-  final CourseRepository courseRepository = CourseRepository();
-
-  late Future<List<Map<String, dynamic>>> _coursesFuture;
-
-  @override
-  void initState() {
-    super.initState();
-    _coursesFuture =
-        courseRepository.fetchCoursesByCategory(widget.category.id ?? '');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Courses in ${widget.category.name}'),
-      ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: _coursesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No courses found.'));
-          } else {
-            final courses = snapshot.data!;
-            return ListView.builder(
-              itemCount: courses.length,
-              itemBuilder: (context, index) {
-                final courseData = courses[index];
-                final course = courseData['course'] as Course;
-
-                return ListTile(
-                  title: Text(course.title),
-                  subtitle: Text('${course.price}'),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CourseDetailsScreen(
-                            courseData: courseData), // Adjust as needed
-                      ),
-                    );
-                  },
-                );
-              },
-            );
-          }
-        },
-      ),
-    );
+        appBar: AppBar(
+          toolbarHeight: 90,
+          backgroundColor: Colors.white,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            color: ColorUtility.primaryColor,
+            onPressed: () {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, HomePage.route, (Route<dynamic> route) => false);
+            },
+          ),
+          title: Center(
+              child: Text('${widget.category.name}',
+                  style: TextUtils.headlineStyle)),
+          actions: const [
+            CartIconButton(),
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(20),
+          child: CourseWidget(
+            rank: '',
+            categoryId: widget.category.id ?? '',
+          ),
+        ));
   }
 }

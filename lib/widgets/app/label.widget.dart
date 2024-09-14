@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 class LabelTextwidget extends StatelessWidget {
   final String label;
   final String linkText;
-  final String route;
-  const LabelTextwidget(
-      {required this.label,
-      required this.linkText,
-      required this.route,
-      super.key});
+
+  void Function()? onPressed;
+  LabelTextwidget(
+      {required this.label, required this.linkText, this.onPressed, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +19,7 @@ class LabelTextwidget extends StatelessWidget {
           style: TextUtils.titleTextStyle,
         ),
         TextButton(
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, route);
-            },
+            onPressed: onPressed,
             child: Text(
               linkText,
               style: TextUtils.smallTextStyle,

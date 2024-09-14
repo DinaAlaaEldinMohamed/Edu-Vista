@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/models/course.dart';
+import 'package:edu_vista/services/ranking.service.dart';
 import 'package:edu_vista/utils/app_enums.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,7 +21,10 @@ class CourseBloc extends Bloc<CourseEvent, CourseState> {
   FutureOr<void> _onGetCourse(
       CourseFetchEvent event, Emitter<CourseState> emit) {
     _course = event.course;
-    _selectedOption = CourseOptions.Lecture; // Default option
+    _selectedOption = CourseOptions.Lecture;
+    if (_course != null) {
+      RankingService().updateUserViewRank(_course!.id);
+    }
 
     emit(CourseLoaded(_course!, _selectedOption!));
   }

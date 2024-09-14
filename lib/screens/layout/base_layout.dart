@@ -28,7 +28,7 @@ class BaseLayout extends StatefulWidget {
   });
 
   @override
-  _BaseLayoutState createState() => _BaseLayoutState();
+  State<BaseLayout> createState() => _BaseLayoutState();
 }
 
 class _BaseLayoutState extends State<BaseLayout> {
@@ -85,19 +85,19 @@ class _BaseLayoutState extends State<BaseLayout> {
                     SizedBox(width: 10),
                   ],
                 )
-              : CustomAppBar(
-                  title: _selectedIndex == 1
-                      ? 'Courses'
-                      : _selectedIndex == 2
-                          ? 'Search'
+              : _selectedIndex == 2
+                  ? null
+                  : CustomAppBar(
+                      title: _selectedIndex == 1
+                          ? 'Courses'
                           : _selectedIndex == 3
                               ? 'Chat'
                               : 'Profile',
-                  actions: const [
-                    CartIconButton(),
-                    SizedBox(width: 10),
-                  ],
-                ),
+                      actions: const [
+                        CartIconButton(),
+                        SizedBox(width: 10),
+                      ],
+                    ),
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {

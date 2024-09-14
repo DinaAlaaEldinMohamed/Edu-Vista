@@ -14,12 +14,12 @@ class CourseRepository {
   Future<List<Map<String, dynamic>>> fetchCourseAndInstructor(
       String rank) async {
     try {
-      final availableRankings = await RankingService().getAvailableRankings();
+      // final availableRankings = await RankingService().getAvailableRankings();
 
-      // Check if the current rank is valid
-      if (!availableRankings.contains(rank)) {
-        return [];
-      }
+      // // Check if the current rank is valid
+      // if (!availableRankings.contains(rank)) {
+      //   return [];
+      // }
 
       // Fetch courses
       final courseQuerySnapshot = await FirebaseFirestore.instance

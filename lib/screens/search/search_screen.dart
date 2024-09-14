@@ -4,6 +4,7 @@ import 'package:edu_vista/screens/categories/category_courses_screen.dart';
 import 'package:edu_vista/screens/courses/course_destails_screen.dart';
 
 import 'package:edu_vista/utils/colors_utils.dart';
+import 'package:edu_vista/widgets/app/cart_icon_btn.widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:edu_vista/models/course.dart';
@@ -45,6 +46,10 @@ class _SearchViewState extends State<SearchView> {
     super.dispose();
   }
 
+  void _onSearchTextChanged(String query) {
+    context.read<SearchBloc>().add(SearchQueryChanged(query));
+  }
+
   void _onSearchSubmitted() {
     final query = searchController.text.trim();
     if (query.isNotEmpty) {
@@ -56,7 +61,20 @@ class _SearchViewState extends State<SearchView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: _buildSearchBox(),
+        backgroundColor: Colors.white,
+        toolbarHeight: 80,
+        automaticallyImplyLeading: false,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildSearchBox(),
+            const SizedBox(width: 5),
+            const CartIconButton(),
+          ],
+        ),
+        // actions: const [
+        //   CartIconButton(),
+        // ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -114,6 +132,8 @@ class _SearchViewState extends State<SearchView> {
 
   Widget _buildSearchBox() {
     return Container(
+      width: 276,
+      height: 44,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         color: Colors.white,
@@ -121,12 +141,16 @@ class _SearchViewState extends State<SearchView> {
       child: TextField(
         controller: searchController,
         decoration: InputDecoration(
-          hintText: 'Search...',
+          hintText: '  Search...',
+          border: InputBorder.none,
           suffixIcon: IconButton(
             icon: const Icon(Icons.search),
-            onPressed: _onSearchSubmitted,
+            onPressed: _onSearchSubmitted, // Handle search on button press
           ),
         ),
+        onChanged: (value) {
+          _onSearchTextChanged(value); // Handle search on text change
+        },
         onSubmitted: (_) => _onSearchSubmitted(),
       ),
     );

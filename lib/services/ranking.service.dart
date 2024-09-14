@@ -23,30 +23,56 @@ class RankingService {
           final category = courseData['category'] as DocumentReference;
 
           List<String> newRanks = [];
-
-          // Determine rank based on rating
           newRanks.addAll(_getRanksBasedOnRating(rating, rankData));
 
-          // Determine rank based on category
           final categoryRank =
               await _getRankBasedOnCategory(category, rankData);
           if (categoryRank != null) {
             newRanks.add(categoryRank);
           }
 
-          // Determine rank based on enrollments
           newRanks.addAll(_getRanksBasedOnSales(enrollments, rankData));
-
-          // Remove duplicates and set rank field in Firestore
-          final uniqueRanks = newRanks.toSet().toList();
-          await _firestore
-              .collection('courses')
-              .doc(courseDoc.id)
-              .update({'ranks': uniqueRanks});
+          final currentRanksSnapshot = await courseDoc.reference.get();
+          final currentRanks =
+              List<String>.from(currentRanksSnapshot.data()?['ranks'] ?? []);
+          final allRanks = (currentRanks.toSet()..addAll(newRanks)).toList();
+          await courseDoc.reference.update({'ranks': allRanks});
         }
       }
     } catch (e) {
       print('Error updating rankings: $e');
+    }
+  }
+
+  Future<void> updateUserViewRank(String courseId) async {
+    final courseRef =
+        FirebaseFirestore.instance.collection('courses').doc(courseId);
+
+    // Check if the course is already in the 'Because you Viewed' rank
+    final courseDoc = await courseRef.get();
+    final courseData = courseDoc.data();
+    final currentRanks = List<String>.from(courseData?['ranks'] ?? []);
+
+    if (!currentRanks.contains('Because you Viewed')) {
+      await courseRef.update({
+        'ranks': FieldValue.arrayUnion(['Because you Viewed']),
+      });
+    }
+  }
+
+  Future<void> updateStudentAlsoSearchRank(String courseId) async {
+    final courseRef =
+        FirebaseFirestore.instance.collection('courses').doc(courseId);
+
+    // Check if the course is already in the 'Because you Viewed' rank
+    final courseDoc = await courseRef.get();
+    final courseData = courseDoc.data();
+    final currentRanks = List<String>.from(courseData?['ranks'] ?? []);
+
+    if (!currentRanks.contains('Students Also Search For')) {
+      await courseRef.update({
+        'ranks': FieldValue.arrayUnion(['Students Also Search For']),
+      });
     }
   }
 
