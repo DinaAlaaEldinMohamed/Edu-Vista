@@ -19,6 +19,7 @@ class CategoriesScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         toolbarHeight: 90,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),

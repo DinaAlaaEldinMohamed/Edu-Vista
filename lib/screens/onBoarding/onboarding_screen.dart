@@ -44,7 +44,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _onSkip() {
     // Skip to the last page
-    _pageController.jumpToPage(_pages.length - 1);
+    //  _pageController.jumpToPage(_pages.length - 1);
+    Navigator.pushReplacementNamed(context, LoginScreen.route);
   }
 
   final List<Map<String, dynamic>> _pages = [

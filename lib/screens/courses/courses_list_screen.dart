@@ -1,5 +1,6 @@
 import 'package:edu_vista/models/course.dart';
 import 'package:edu_vista/repositoy/course_repo.dart';
+import 'package:edu_vista/screens/courses/course_destails_screen.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:edu_vista/utils/images_utils.dart';
 import 'package:edu_vista/widgets/app/responsive_text.dart';
@@ -51,90 +52,97 @@ class PurchasedCoursesList extends StatelessWidget {
               final progress = courseData['progress'] as double?;
               final instructorName = courseData['instructorName'] as String;
 
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Course Image
-                    // ignore: unnecessary_null_comparison
-                    course.image != null
-                        ? SizedBox(
-                            width: 157,
-                            height: 105,
-                            child: Image.network(
-                              course.image,
-                              fit: BoxFit.cover,
+              return InkWell(
+                onTap: () {
+                  Navigator.pushNamed(context, CourseDetailsScreen.route,
+                      arguments: courseData);
+                },
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Course Image
+                      // ignore: unnecessary_null_comparison
+                      course.image != null
+                          ? SizedBox(
+                              width: 157,
+                              height: 105,
+                              child: Image.network(
+                                course.image,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : SizedBox(
+                              width: 157,
+                              height: 105,
+                              child: Image.asset(ImagesUtils.noCourses),
                             ),
-                          )
-                        : SizedBox(
-                            width: 157,
-                            height: 105,
-                            child: Image.asset(ImagesUtils.noCourses),
-                          ),
-                    const SizedBox(width: 16),
-                    // Course Details (Title, Progress)
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ResponsiveText(
-                            text: course.title,
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              const SizedBox(
-                                height: 14,
-                                child: Icon(
-                                  Icons.person_outline_rounded,
-                                  size: 18,
+                      const SizedBox(width: 16),
+                      // Course Details (Title, Progress)
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ResponsiveText(
+                              text: course.title,
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  height: 14,
+                                  child: Icon(
+                                    Icons.person_outline_rounded,
+                                    size: 18,
+                                  ),
                                 ),
-                              ),
-                              ResponsiveText(
-                                text: instructorName,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          progress == null
-                              ? const ResponsiveText(
-                                  text: 'Start your course',
-                                  fontSize: 12,
+                                ResponsiveText(
+                                  text: instructorName,
                                   fontWeight: FontWeight.w400,
-                                )
-                              : Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const ResponsiveText(
-                                      text: 'Continue',
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                    const SizedBox(height: 10),
-                                    LinearProgressIndicator(
-                                      value: progress / 100,
-                                      backgroundColor: Colors.grey[300],
-                                      valueColor:
-                                          const AlwaysStoppedAnimation<Color>(
-                                              ColorUtility.secondaryColor),
-                                      minHeight: 5,
-                                    ),
-                                    const SizedBox(height: 5),
-                                    // Text(
-                                    //   '${progress.toStringAsFixed(0)}% completed',
-                                    //   style: const TextStyle(fontSize: 12),
-                                    // ),
-                                  ],
                                 ),
-                        ],
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            progress == null
+                                ? const ResponsiveText(
+                                    text: 'Start your course',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w400,
+                                  )
+                                : Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const ResponsiveText(
+                                        text: 'Continue',
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      const SizedBox(height: 10),
+                                      LinearProgressIndicator(
+                                        value: progress / 100,
+                                        backgroundColor: Colors.grey[300],
+                                        valueColor:
+                                            const AlwaysStoppedAnimation<Color>(
+                                                ColorUtility.secondaryColor),
+                                        minHeight: 5,
+                                      ),
+                                      const SizedBox(height: 5),
+                                      // Text(
+                                      //   '${progress.toStringAsFixed(0)}% completed',
+                                      //   style: const TextStyle(fontSize: 12),
+                                      // ),
+                                    ],
+                                  ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },

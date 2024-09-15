@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/models/course.dart';
 import 'package:edu_vista/services/ranking.service.dart';
 import 'package:edu_vista/utils/app_enums.dart';

@@ -13,7 +13,7 @@ class FullScreenImageDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Padding(
-        padding: const EdgeInsets.only(top: 20),
+        padding: const EdgeInsets.only(top: 40),
         child: InteractiveViewer(
           child: Image.network(imageUrl),
         ),

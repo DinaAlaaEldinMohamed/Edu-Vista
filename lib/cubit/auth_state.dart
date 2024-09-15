@@ -45,18 +45,18 @@ final class ForgotPasswordFailed extends ForgotPasswordState {
   ForgotPasswordFailed(this.error);
 }
 
-// Reset Password State
-sealed class ResetPasswordState extends AuthState {}
+// // Reset Password State
+// sealed class ResetPasswordState extends AuthState {}
 
-final class ResetPasswordLoading extends ResetPasswordState {}
+// final class ResetPasswordLoading extends ResetPasswordState {}
 
-final class ResetPasswordSuccess extends ResetPasswordState {}
+// final class ResetPasswordSuccess extends ResetPasswordState {}
 
-final class ResetPasswordFailed extends ResetPasswordState {
-  final String error;
+// final class ResetPasswordFailed extends ResetPasswordState {
+//   final String error;
 
-  ResetPasswordFailed(this.error);
-}
+//   ResetPasswordFailed(this.error);
+// }
 
 // update user data
 sealed class UpdateUserState extends AuthState {}

@@ -26,7 +26,7 @@ class CustomBottomNavigationBar extends StatelessWidget {
         _buildNavItem(Icons.home, 0),
         _buildNavItem(Icons.import_contacts, 1),
         _buildNavItem(Icons.search, 2),
-        _buildNavItem(Icons.mode_comment_outlined, 3),
+        //  _buildNavItem(Icons.mode_comment_outlined, 3),
         _buildProfileItem(4), // Add profile item at the end
       ],
       currentIndex: currentIndex,

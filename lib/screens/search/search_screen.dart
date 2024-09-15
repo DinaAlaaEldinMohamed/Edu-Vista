@@ -2,7 +2,6 @@ import 'package:edu_vista/blocs/search/search_bloc.dart';
 import 'package:edu_vista/models/category.dart';
 import 'package:edu_vista/screens/categories/category_courses_screen.dart';
 import 'package:edu_vista/screens/courses/course_destails_screen.dart';
-
 import 'package:edu_vista/utils/colors_utils.dart';
 import 'package:edu_vista/widgets/app/cart_icon_btn.widget.dart';
 import 'package:flutter/material.dart';

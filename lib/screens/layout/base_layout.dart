@@ -1,6 +1,7 @@
 import 'package:edu_vista/cubit/auth_cubit.dart';
+//import 'package:edu_vista/screens/chat/chat_list_screen.dart';
 import 'package:edu_vista/screens/courses/courses_list_screen.dart';
-import 'package:edu_vista/screens/home/chat_screen.dart';
+
 import 'package:edu_vista/screens/home/home_screen.dart';
 import 'package:edu_vista/screens/search/search_screen.dart';
 import 'package:edu_vista/screens/profile/profile_screen.dart';
@@ -56,7 +57,7 @@ class _BaseLayoutState extends State<BaseLayout> {
     const HomeScreen(),
     const CoursesListScreen(),
     const SearchScreen(),
-    const ChatScreen(),
+    //ChatListScreen(),
     const ProfileScreen(),
   ];
 
@@ -77,6 +78,7 @@ class _BaseLayoutState extends State<BaseLayout> {
           ? widget.customAppBar
           : _selectedIndex == 0
               ? AppBar(
+                  backgroundColor: Colors.white,
                   automaticallyImplyLeading: false,
                   toolbarHeight: 80,
                   title: _buildWelcomeText(),
@@ -90,9 +92,9 @@ class _BaseLayoutState extends State<BaseLayout> {
                   : CustomAppBar(
                       title: _selectedIndex == 1
                           ? 'Courses'
-                          : _selectedIndex == 3
-                              ? 'Chat'
-                              : 'Profile',
+                          // : _selectedIndex == 3
+                          // ? 'Chat'
+                          : 'Profile',
                       actions: const [
                         CartIconButton(),
                         SizedBox(width: 10),

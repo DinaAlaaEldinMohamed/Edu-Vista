@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/home_page.dart';
-import 'package:edu_vista/screens/auth/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -131,37 +130,37 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   // Reset Password Method
-  Future<void> resetPassword({
-    required BuildContext context,
-    required String oobCode, // The code from the password reset email
-    required TextEditingController newPasswordController,
-  }) async {
-    try {
-      await FirebaseAuth.instance.confirmPasswordReset(
-        code: oobCode,
-        newPassword: newPasswordController.text,
-      );
+  // Future<void> resetPassword({
+  //   required BuildContext context,
+  //   required String oobCode, // The code from the password reset email
+  //   required TextEditingController newPasswordController,
+  // }) async {
+  //   try {
+  //     await FirebaseAuth.instance.confirmPasswordReset(
+  //       code: oobCode,
+  //       newPassword: newPasswordController.text,
+  //     );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.green,
-          content: Text('Password reset successfully'),
-        ),
-      );
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(
+  //         backgroundColor: Colors.green,
+  //         content: Text('Password reset successfully'),
+  //       ),
+  //     );
 
-      emit(ResetPasswordSuccess());
+  //     emit(ResetPasswordSuccess());
 
-      Navigator.pushReplacementNamed(context, LoginScreen.route);
-    } on FirebaseAuthException catch (e) {
-      if (!context.mounted) return;
+  //     Navigator.pushReplacementNamed(context, LoginScreen.route);
+  //   } on FirebaseAuthException catch (e) {
+  //     if (!context.mounted) return;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: ${e.message}'),
-        ),
-      );
-    }
-  }
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         content: Text('Error: ${e.message}'),
+  //       ),
+  //     );
+  //   }
+  // }
 
   Future<void> updateUserData({
     required String name,
@@ -194,21 +193,16 @@ class AuthCubit extends Cubit<AuthState> {
         await user.updateDisplayName(name);
       }
 
-      // Create or update user document in Firestore
       final userRef =
           FirebaseFirestore.instance.collection('users').doc(user.uid);
-
-      // Check if the document exists
       final userDoc = await userRef.get();
       if (!userDoc.exists) {
-        // If not found, create the document with initial data
         await userRef.set({
           'displayName': name,
           'email': user.email,
           'phoneNumber': phone,
         });
       } else {
-        // If found, update the document with new data
         await userRef.update({
           'displayName': name,
           'phoneNumber': phone,
@@ -224,7 +218,6 @@ class AuthCubit extends Cubit<AuthState> {
       await user.reload();
       final updatedUser = FirebaseAuth.instance.currentUser!;
 
-      // Emit success state and show success message
       emit(UpdateUserSuccess(updatedUser));
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

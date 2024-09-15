@@ -1,9 +1,6 @@
-import 'package:edu_vista/cubit/auth_cubit.dart';
-import 'package:edu_vista/screens/auth/login_screen.dart';
 import 'package:edu_vista/widgets/app/appButtons/app_elvated_btn.dart';
 import 'package:edu_vista/widgets/app/app_text_form_field.widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PasswordResetConfirmationScreen extends StatefulWidget {
   static const String route = '/confirm_reset_password';
@@ -36,27 +33,27 @@ class _PasswordResetConfirmationScreenState
     super.dispose();
   }
 
-  Future<void> _handleConfirmPassword() async {
-    final newPassword = newPasswordController.text.trim();
-    final confirmPassword = confirmPasswordController.text.trim();
+  // Future<void> _handleConfirmPassword() async {
+  //   final newPassword = newPasswordController.text.trim();
+  //   final confirmPassword = confirmPasswordController.text.trim();
 
-    if (newPassword.isNotEmpty && newPassword == confirmPassword) {
-      try {
-        await context.read<AuthCubit>().resetPassword(
-              context: context,
-              oobCode: widget.oobCode,
-              newPasswordController: newPasswordController,
-            );
-        Navigator.pushReplacementNamed(context, LoginScreen.route);
-      } catch (e) {
-        // Handle error state or show a message if needed
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match')),
-      );
-    }
-  }
+  //   if (newPassword.isNotEmpty && newPassword == confirmPassword) {
+  //     try {
+  //       await context.read<AuthCubit>().resetPassword(
+  //             context: context,
+  //             oobCode: widget.oobCode,
+  //             newPasswordController: newPasswordController,
+  //           );
+  //       Navigator.pushReplacementNamed(context, LoginScreen.route);
+  //     } catch (e) {
+  //       // Handle error state or show a message if needed
+  //     }
+  //   } else {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(content: Text('Passwords do not match')),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +81,7 @@ class _PasswordResetConfirmationScreenState
             _isLoading
                 ? const CircularProgressIndicator()
                 : AppElvatedBtn(
-                    onPressed: _handleConfirmPassword,
+                    onPressed: () {}, // _handleConfirmPassword,
                     child: const Text('Confirm Password'),
                   ),
           ],

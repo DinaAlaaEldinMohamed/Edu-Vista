@@ -5,10 +5,9 @@ import 'package:edu_vista/screens/auth/login_screen.dart';
 import 'package:edu_vista/screens/auth/password_reset_confirmation.dart';
 import 'package:edu_vista/screens/auth/signup_screen.dart';
 import 'package:edu_vista/screens/categories/categories_screen.dart';
+import 'package:edu_vista/screens/chat/chat_list_screen.dart';
 import 'package:edu_vista/screens/courses/course_destails_screen.dart';
 import 'package:edu_vista/screens/courses/courses_list_screen.dart';
-import 'package:edu_vista/screens/courses/ranked_course_screen.dart';
-import 'package:edu_vista/screens/home/chat_screen.dart';
 import 'package:edu_vista/screens/search/search_screen.dart';
 import 'package:edu_vista/screens/onBoarding/onboarding_screen.dart';
 import 'package:edu_vista/screens/profile/profile_screen.dart';
@@ -44,8 +43,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const ProfileScreen());
       case CoursesListScreen.route:
         return MaterialPageRoute(builder: (_) => const CoursesListScreen());
-      case ChatScreen.route:
-        return MaterialPageRoute(builder: (_) => const ChatScreen());
+      case ChatListScreen.route:
+        return MaterialPageRoute(builder: (_) => ChatListScreen());
       case SearchScreen.route:
         return MaterialPageRoute(builder: (_) => const SearchScreen());
       case CartScreen.route:

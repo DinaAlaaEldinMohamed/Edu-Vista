@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/models/cart_item.dart';
 import 'package:edu_vista/models/course.dart';
 import 'package:edu_vista/models/instructors.dart';
-import 'package:edu_vista/services/ranking.service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

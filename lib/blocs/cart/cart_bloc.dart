@@ -26,7 +26,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     emit(CartLoadInProgress());
     try {
       final cartItems = await _cartService.getCartItems();
-      print('Fetched Cart Items: $cartItems'); // Debugging line
+      print('Fetched Cart Items: $cartItems');
       emit(CartLoadSuccess(cartItems));
     } catch (e) {
       emit(CartLoadFailure('Failed to load cart items: $e'));
@@ -64,7 +64,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       // Fetch all cart items
       final cartItems = await _cartService.getCartItems();
       print(
-          'Cart items before checkout: ${cartItems.map((item) => item.id).toList()}'); // Logging
+          'Cart items before checkout: ${cartItems.map((item) => item.id).toList()}');
 
       // Find the specific item being purchased
       final cartItem = cartItems.firstWhere(
@@ -131,7 +131,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
             emit(CartLoadSuccess(updatedCartItems));
 
-            // Show success message
             ScaffoldMessenger.of(event.context).showSnackBar(
               SnackBar(
                 backgroundColor: Colors.green,
@@ -139,7 +138,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
               ),
             );
           } else {
-            // User already enrolled in the course, just remove the item from the cart
+            // User already enrolled in the course,  remove the item from the cart
             await _cartService.removeCartItem(event.cartItemId);
 
             // Fetch updated cart items
