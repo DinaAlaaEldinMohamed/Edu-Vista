@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:edu_vista/models/course.dart';
-import 'package:edu_vista/models/category.dart'; // Ensure you have a Category model
+import 'package:edu_vista/models/category.dart';
 import 'package:edu_vista/repositoy/course_repo.dart';
 import 'package:edu_vista/services/ranking.service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -33,7 +33,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       SearchQueryChanged event, Emitter<SearchState> emit) async {
     final query = event.query;
 
-    // Fetch trending or recent tags if the query is empty
     if (query.isEmpty) {
       await _fetchDefaultContent(emit);
     } else {

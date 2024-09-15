@@ -16,9 +16,7 @@ class UserListScreen extends StatelessWidget {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('users')
-            .where('uid',
-                isNotEqualTo: FirebaseAuth
-                    .instance.currentUser!.uid) // Exclude current user
+            .where('uid', isNotEqualTo: FirebaseAuth.instance.currentUser!.uid)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

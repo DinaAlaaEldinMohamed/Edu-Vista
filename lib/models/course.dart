@@ -34,7 +34,7 @@ class Course {
   });
 
   factory Course.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>?; // Safely casting to Map
+    final data = doc.data() as Map<String, dynamic>?;
 
     if (data == null) {
       throw Exception('Document does not exist or data is null');
@@ -42,10 +42,8 @@ class Course {
 
     return Course(
       id: doc.id,
-      title: data['title'] as String? ??
-          'Unknown Title', // Providing fallback values
-      image: data['image'] as String? ??
-          '', // Provide default image or handle null case
+      title: data['title'] as String? ?? 'Unknown Title',
+      image: data['image'] as String? ?? '',
       category: data['category'] is DocumentReference
           ? data['category'] as DocumentReference
           : FirebaseFirestore.instance.doc(data['category'] as String? ?? ''),

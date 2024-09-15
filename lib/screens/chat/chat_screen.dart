@@ -6,12 +6,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 class ChatScreen extends StatefulWidget {
   static const String route = '/chat';
 
-  final String chatId; // Unique ID for the chat room or conversation
+  final String chatId;
 
-  const ChatScreen({Key? key, required this.chatId}) : super(key: key);
+  const ChatScreen({super.key, required this.chatId});
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {

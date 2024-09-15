@@ -4,16 +4,15 @@ class CartItem {
   final String id;
   final String courseId;
   final String instructorName;
-  final Course? course; // Make course nullable
+  final Course? course;
 
   CartItem({
     required this.id,
     required this.courseId,
     required this.instructorName,
-    this.course, // Initialize course in the constructor
+    this.course,
   });
 
-  // Factory constructor for creating a CartItem from Firestore data
   factory CartItem.fromFirestore(Map<String, dynamic> data) {
     return CartItem(
       id: data['id'] as String? ?? '',
@@ -30,7 +29,6 @@ class CartItem {
     };
   }
 
-  // Copy constructor to create a new instance with updated course
   CartItem copyWith({Course? course}) {
     return CartItem(
       id: id,

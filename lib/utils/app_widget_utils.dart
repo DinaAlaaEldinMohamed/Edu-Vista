@@ -3,8 +3,6 @@ import 'package:edu_vista/utils/text_utility.dart';
 import 'package:flutter/material.dart';
 
 Widget buildRatingStars(double rating, double starSize) {
-  // Adjust this value to your desired star size
-
   return Row(
     children: [
       Text(
@@ -20,19 +18,19 @@ Widget buildRatingStars(double rating, double starSize) {
               return Icon(
                 Icons.star,
                 color: ColorUtility.primaryColor,
-                size: starSize, // Set the size of the star icon
+                size: starSize,
               );
             } else if (starIndex < rating) {
               return Icon(
                 Icons.star_half,
                 color: ColorUtility.primaryColor,
-                size: starSize, // Set the size of the star icon
+                size: starSize,
               );
             } else {
               return Icon(
                 Icons.star_border,
                 color: ColorUtility.primaryColor,
-                size: starSize, // Set the size of the star icon
+                size: starSize,
               );
             }
           },

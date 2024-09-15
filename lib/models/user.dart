@@ -17,7 +17,6 @@ class UserMetadata {
     this.purchasedCourses = const [],
   });
 
-  // Factory method to create UserMetadata from Firestore document data
   factory UserMetadata.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return UserMetadata(
@@ -30,7 +29,6 @@ class UserMetadata {
     );
   }
 
-  // Convert UserMetadata object to Firestore-friendly data
   Map<String, dynamic> toFirestore() {
     return {
       'phoneNumber': phoneNumber,
@@ -42,7 +40,6 @@ class UserMetadata {
     };
   }
 
-  // Add a course to the purchasedCourses list
   void addPurchasedCourse(String courseId) {
     purchasedCourses.add(courseId);
   }

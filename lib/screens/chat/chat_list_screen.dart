@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 class ChatListScreen extends StatelessWidget {
   static const String route = '/chat_list';
 
+  const ChatListScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -6,8 +6,8 @@ class CustomExpansionTile extends StatefulWidget {
   final List<Widget> children;
   final IconData collapasedIcon;
   final IconData expandedIcon;
-  final bool? isExpanded; // Allow external control of the expansion state
-  final ValueChanged<bool>? onExpansionChanged; // Callback for state changes
+  final bool? isExpanded;
+  final ValueChanged<bool>? onExpansionChanged;
 
   const CustomExpansionTile({
     required this.title,

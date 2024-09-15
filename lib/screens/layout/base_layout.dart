@@ -1,12 +1,10 @@
 import 'package:edu_vista/cubit/auth_cubit.dart';
 //import 'package:edu_vista/screens/chat/chat_list_screen.dart';
 import 'package:edu_vista/screens/courses/courses_list_screen.dart';
-
 import 'package:edu_vista/screens/home/home_screen.dart';
 import 'package:edu_vista/screens/search/search_screen.dart';
 import 'package:edu_vista/screens/profile/profile_screen.dart';
 import 'package:edu_vista/utils/colors_utils.dart';
-
 import 'package:edu_vista/widgets/app/cart_icon_btn.widget.dart';
 import 'package:edu_vista/widgets/app/custom_appbar.widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
